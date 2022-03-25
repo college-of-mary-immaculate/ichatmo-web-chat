@@ -1,0 +1,68 @@
+.c-conversations {
+  &__item {
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    overflow: hidden;
+    border-radius: 1rem;
+    cursor: pointer;
+    flex-shrink: 0;
+    // margin-right: 0.5rem;
+
+    &:first-child {
+      margin-top: 0.5rem;
+    }
+
+    &:last-child {
+      margin-bottom: 0.5rem;
+    }
+
+    &:hover {
+      background-color: #f4f4f4;
+    }
+  }
+
+  &__image-wrap {
+    display: flex;
+    align-items: center;
+  }
+
+  &__image {
+    border-radius: 50%;
+  }
+
+  &__innerwrap {
+    display: flex;
+    flex-direction: column;
+    padding: 0 0.5rem;
+    width: 100%;
+    min-width: 0;
+  }
+
+  &__name {
+    font-weight: 500;
+  }
+
+  &__preview {
+    display: inline-block;
+    width: calc(80%);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #808080;
+    font-weight: 300;
+    font-size: 0.875rem;
+  }
+
+  &__button {
+    border: none;
+    outline: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    align-self: flex-start;
+    cursor: pointer;
+  }
+}

@@ -1,0 +1,86 @@
+.c-conversations {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  //   height: 100%;
+  min-height: 100%;
+  max-height: 0;
+  overflow: hidden;
+
+  &__searchbar {
+    padding: 0.75rem;
+
+    &-wrap {
+      display: flex;
+      align-items: center;
+      // border: 1px solid lightgrey;
+      border-radius: 1rem;
+      padding: 0 0.5rem;
+      overflow: hidden;
+      background-color: #ededed;
+    }
+
+    &-icon {
+      width: 24px;
+      height: 24px;
+      color: darkgray;
+    }
+
+    &-input {
+      border: none;
+      outline: none;
+      width: 100%;
+      font-size: 1rem;
+      padding: 0.5em;
+      background-color: inherit;
+    }
+  }
+
+  &__tabs {
+    display: flex;
+    align-items: center;
+    margin: 0 0.75rem 0.5rem 0.75rem;
+    background-color: #f8f8f8;
+    border-radius: 1rem 1rem 0 0;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  &__tab-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 0;
+    padding: 0.5em;
+    width: 100%;
+    border-radius: 1rem 1rem 0 0;
+    font-weight: 400;
+    cursor: pointer;
+
+    &--active {
+      background-color: #fefefe;
+      box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    }
+  }
+
+  &__list {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    height: 100%;
+    // border-top: 1px solid #f0f0f0;
+    margin: 0 0.75rem 0 0.75rem;
+    max-height: 100%;
+    overflow-y: auto;
+
+    // &::before {
+    //   content: "";
+    //   position: absolute;
+    //   top: 0;
+    //   width: 100%;
+    //   height: 1px;
+    //   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    // }
+  }
+}

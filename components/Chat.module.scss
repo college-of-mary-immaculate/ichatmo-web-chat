@@ -1,0 +1,45 @@
+.c-chat {
+  max-width: 70%;
+  margin: 0.5rem 0.75rem;
+  align-self: flex-start;
+  display: flex;
+  align-items: flex-end;
+
+  &--user {
+    align-self: flex-end;
+  }
+
+  &--consecutive {
+    margin-bottom: 0;
+  }
+
+  &:nth-last-child(2) {
+    margin-bottom: 1rem;
+  }
+
+  &__image-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 0.75rem;
+  }
+
+  &__spacer {
+    width: 36px;
+    height: 36px;
+  }
+
+  &__body-wrap {
+    border-radius: 1rem 1rem 1rem 0;
+    background-color: #dddd;
+    padding: 0.75rem;
+
+    &--user {
+      border-radius: 1rem 1rem 0 1rem;
+      background-color: dodgerblue;
+      color: white;
+    }
+  }
+}

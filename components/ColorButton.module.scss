@@ -1,0 +1,19 @@
+.c-color {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &__button {
+    border: none;
+    outline: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    margin-right: 0.75rem;
+
+    &--selected {
+      box-shadow: 0 4px 4px rgba($color: #000000, $alpha: 0.25);
+    }
+  }
+}

@@ -1,0 +1,73 @@
+@use "./mixins";
+
+.l-container {
+  //   height: 100%;
+  min-height: 100%;
+  max-height: 100%;
+  overflow-y: auto;
+  display: grid;
+  position: relative;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: auto 1fr;
+  background-color: #fefefe;
+
+  &__topbar {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    z-index: 0;
+  }
+
+  &__conversations {
+    grid-column: 1 / -1;
+    grid-row: 2 / -1;
+    z-index: 0;
+
+    @include mixins.tablet() {
+      grid-column: 1 / 5;
+    }
+  }
+
+  &__chat-box {
+    grid-column: 1 / -1;
+    grid-row: 1 / -1;
+    z-index: 1;
+    overflow: hidden;
+
+    @include mixins.tablet() {
+      grid-column: 5 / -1;
+      grid-row: 2 / -1;
+      // border-radius: 1rem 1rem 0 0;
+      border: 1px solid lightgrey;
+      border-top: none;
+      border-bottom: none;
+      margin-right: 0.75rem;
+      // margin-top: -0.75rem;
+    }
+
+    @include mixins.desktop() {
+      grid-column: 5 / 10;
+      min-width: 700px;
+      margin-right: 0;
+    }
+  }
+
+  &__chat-menu {
+    grid-column: 1 / -1;
+    grid-row: 1 / -1;
+    z-index: 2;
+    overflow: hidden;
+
+    @include mixins.tablet() {
+      // grid-column: 4 / -1;
+      display: none;
+      min-width: 280px;
+    }
+
+    @include mixins.desktop() {
+      // border-top: 1px solid lightgrey;
+      grid-column: 10 /-1;
+      grid-row: 2 / -1;
+      display: block;
+    }
+  }
+}
