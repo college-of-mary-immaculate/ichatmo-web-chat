@@ -1,0 +1,50 @@
+.c-user-item {
+    display: flex;
+    padding: 0.5rem;
+    align-items: center;
+    cursor: pointer;
+    border-radius: 1rem;
+    flex-shrink: 0;
+
+    &:hover {
+        background-color: dodgerblue;
+
+        .c-user-item__name {
+            color: white;
+        }
+
+        .c-user-item__username {
+            color: #f4f4f4;
+        }
+      }
+
+    &__image-wrap {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        overflow: hidden;
+        position: relative;
+        flex-shrink: 0;
+    }
+
+    &__image {
+        object-fit: cover;
+    }
+
+    &__info-wrap {
+        display: flex;
+        flex-direction: column;
+        padding: 0 0.5rem;
+        width: 100%;
+        min-width: 0;
+    }
+
+    &__name {
+        font-weight: 500;
+    }
+
+    &__username {
+        color: #808080;
+        font-size: 0.875rem;
+    }
+}

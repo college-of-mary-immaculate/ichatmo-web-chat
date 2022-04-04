@@ -1,0 +1,158 @@
+.c-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 0.7rem;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    background-color: rgba($color: #000000, $alpha: 0.2);
+    box-shadow: 0 4px 4px rgba($color: #000000, $alpha: 0.25);
+    backdrop-filter: blur(4px);
+    z-index: 9999;
+
+
+    &--fade-in {
+        animation: fade-in 250ms ease;
+    }
+
+    &--fade-out {
+        animation: fade-out 250ms ease;
+    }
+
+    &-anim {
+        &-enter {
+            opacity: 0;
+        }
+    
+        &-enter-active {
+            opacity: 1;
+            transition: opacity 250ms;
+        }
+    
+        &-exit {
+            opacity: 1;
+        }
+    
+        &-exit-active {
+            opacity: 0;
+            transition: opacity 200ms;
+        }
+    }
+
+    &-wrap-anim {
+        &-enter {
+            transform: scale(0.5);
+        }
+    
+        &-enter-active {
+            transform: scale(1);
+            transition: transform 250ms;
+        }
+    
+        &-exit {
+            transform: scale(1);
+        }
+    
+        &-exit-active {
+            transform: scale(0.5);
+            transition: transform 250ms;
+        }
+    }
+
+    @keyframes fade-in {
+        0% {
+            opacity: 0;
+        }
+
+        100% {
+            opacity: 1;
+        }
+    }
+
+    @keyframes fade-out {
+        0% {
+            opacity: 1;
+        }
+
+        100% {
+            opacity: 0;
+        }
+    }
+
+    &__wrap {
+        background-color: #fefefe;
+        padding: 1rem;
+        border-radius: 1rem;
+        min-height: 450px;
+        width: 100%;
+        max-width: 600px;
+
+        &--scale-in {
+            animation: scale-in 250ms ease;
+        }
+
+        &--scale-out {
+            animation: scale-out 250ms ease;
+        }
+    }
+
+    @keyframes scale-in {
+        0% {
+            transform: scale(0.5);
+        }
+
+        100% {
+            transform: scale(1);
+        }
+    }
+
+    @keyframes scale-out {
+        0% {
+            transform: scale(1);
+        }
+
+        100% {
+            transform: scale(0.5);
+        }
+    }
+
+    &__header-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+    }
+
+    &__close-button {
+        border: none;
+        outline: none;
+        background-color: transparent;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        border-radius: 50%;
+
+        &:active {
+            background-color: #f4f4f4;
+        }
+    }
+
+    &__description {
+        margin-bottom: 1rem;
+        font-size: 0.875rem;
+    }
+    &__input {
+        background-color: #ededed;
+        border: none;
+        outline: none;
+        width: 100%;
+        font-size: 0.875rem;
+        padding: 0.75em 1em;
+        border-radius: 1rem;
+        margin-bottom: 1rem;
+    }
+}

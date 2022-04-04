@@ -53,7 +53,6 @@ export default function ChatMenu() {
             style={{ border: "none" }}
             // emojiSize={36}
           />
-          {/* <Picker native={true} /> */}
         </div>
       </div>
     </div>

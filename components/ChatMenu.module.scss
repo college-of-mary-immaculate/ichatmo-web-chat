@@ -32,6 +32,11 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
+    // background-color: rgba($color: dodgerblue, $alpha: 0.25);
+    // margin-top: 0.75rem;
+    // border-radius: 1rem;
+    // border: 1px solid rgba($color: dodgerblue, $alpha: 0.1);
+    // box-shadow: 0 4px 4px rgba($color: #000000, $alpha: 0.1);
     border-bottom: 1px solid lightgrey;
     position: relative;
   }
@@ -74,7 +79,7 @@
   }
 
   &__username {
-    color: gray;
+    // color: gray;
     font-weight: 300;
     font-size: 0.875rem;
   }

@@ -14,7 +14,7 @@
   &__topbar {
     grid-column: 1 / -1;
     grid-row: 1;
-    z-index: 0;
+    z-index: 999;
   }
 
   &__conversations {
@@ -25,6 +25,10 @@
     @include mixins.tablet() {
       grid-column: 1 / 5;
     }
+
+    // @include mixins.desktop() {
+    //   min-width: 320px;
+    // }
   }
 
   &__chat-box {
@@ -40,14 +44,13 @@
       border: 1px solid lightgrey;
       border-top: none;
       border-bottom: none;
-      margin-right: 0.75rem;
+      // margin-right: 0.75rem;
       // margin-top: -0.75rem;
     }
 
     @include mixins.desktop() {
       grid-column: 5 / 10;
-      min-width: 700px;
-      margin-right: 0;
+      min-width: 670px;
     }
   }
 
