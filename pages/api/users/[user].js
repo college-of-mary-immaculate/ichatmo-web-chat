@@ -1,4 +1,4 @@
-import { searchUser } from "../../../../lib/user-queries";
+import { searchUser } from "../../../lib/user-queries";
 
 export default async function handler(req, res) {
   const { user } = req.query;

@@ -6,8 +6,14 @@ import useOnClickOutside from "../utils/useOnClickOutside";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 
 export default function NewChatPopup() {
-  const { toggleNewChatPopup, setUserSearched, userSearchedList, userInfo } =
-    useContext(ChatAppContext);
+  const {
+    toggleNewChatPopup,
+    setUserSearched,
+    userSearchedList,
+    userInfo,
+    setSelectedRoom,
+    socket,
+  } = useContext(ChatAppContext);
   const [inputData, setInputData] = useState("");
   const elementRef = useRef(null);
 
@@ -17,7 +23,7 @@ export default function NewChatPopup() {
     if (inputData) {
       const controller = new AbortController();
       const signal = controller.signal;
-      fetch(`/api/users/search/${inputData}`, { signal })
+      fetch(`/api/users/${inputData}`, { signal })
         .then((res) => res.json())
         .then((data) => setUserSearched(data.users))
         .catch((err) => console.log(err));
@@ -34,16 +40,32 @@ export default function NewChatPopup() {
     setInputData(event.target.value);
   }
 
-  function joinRoom() {}
+  function joinRoom(id) {
+    fetch("/api/rooms/join", {
+      method: "POST",
+      body: JSON.stringify({ userId: userInfo.id, targetId: id }),
+      headers: { "Content-Type": "application/json" },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setSelectedRoom(data.room);
+        socket.emit("join-chat", data.room._id);
+      })
+      .catch((err) => console.log(err));
+
+    // socket.emit("join-chat", selectedChat._id);
+    toggleNewChatPopup();
+  }
 
   const users = userSearchedList.map((user) => {
     if (user.id !== userInfo.id) {
       return (
         <UserItem
-          key={user._id}
+          key={user.id}
           fullname={user.fullname}
           username={user.username}
           image={user.image}
+          onclick={() => joinRoom(user.id)}
         />
       );
     }

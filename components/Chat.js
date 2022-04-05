@@ -15,8 +15,9 @@ export default function Chat(props) {
               className={styles["c-chat__user-pic"]}
               src={props.userPic}
               alt="user pic"
-              width={36}
-              height={36}
+              layout="fill"
+              // width={36}
+              // height={36}
             />
           ) : (
             <div className={styles["c-chat__spacer"]}></div>

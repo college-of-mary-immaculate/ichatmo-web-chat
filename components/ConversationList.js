@@ -2,8 +2,17 @@ import ConversationItem from "./ConversationItem";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import styles from "./ConversationList.module.scss";
 import AddMenu from "./AddMenu";
+import { ChatAppContext } from "../contexts/ChatApp.context";
+import { useContext, useEffect } from "react";
 
 export default function ConversationList() {
+  const { setConversations, conversationList, userInfo } =
+    useContext(ChatAppContext);
+
+  useEffect(async () => {
+    await fetch("/api/rooms");
+  }, []);
+
   return (
     <div className={styles["c-conversations"]}>
       <div className={styles["c-conversations__searchbar"]}>

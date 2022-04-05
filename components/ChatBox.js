@@ -4,29 +4,47 @@ import ArrowBackOutlinedIcon from "@mui/icons-material/ArrowBackOutlined";
 import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
 import ChatTop from "./ChatTop";
 import Chat from "./Chat";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
+import { ChatAppContext } from "../contexts/ChatApp.context";
 import styles from "./Chatbox.module.scss";
-import sampleData from "../lib/sample-data";
 
-export default function ChatboxBox() {
+export default function ChatBox() {
+  const { socket, selectedRoom, chatList, setChats, userInfo } =
+    useContext(ChatAppContext);
   const [inputData, setInputData] = useState("");
-  const [messages, setMessages] = useState([...sampleData]);
+  // const [messages, setMessages] = useState([]);
   const textBoxRef = useRef(null);
   const messagesEnd = useRef(null);
 
   useEffect(() => textBoxRef.current.focus(), []);
+  useEffect(() => socketHandler, [selectedRoom]);
+
+  function socketHandler() {
+    socket.on("message-receive", (message) => {
+      insertChat(message);
+    });
+  }
 
   // useEffect(() => setMessages((prevList) => [...prevList, ...sampleData]), []);
 
-  // useEffect(() => scrollToEnd(), [messages]);
+  useEffect(() => scrollToEnd(), [chatList]);
 
-  function handleSubmit(event) {
-    // event.preventDefault();
+  function handleSubmit() {
     if (inputData) {
-      //   socket.emit("message", inputData);
-      //   insertChatbox({ sender: "user", message: inputData });
+      const message = {
+        roomId: selectedRoom._id,
+        userInfo: userInfo,
+        body: inputData,
+      };
+      socket.emit("message", message);
+      insertChat(message);
+      textBoxRef.current.innerHTML = "";
       setInputData("");
     }
+  }
+
+  function insertChat(chat) {
+    setChats(chat);
   }
 
   function inputChangeHandler(event) {
@@ -37,10 +55,10 @@ export default function ChatboxBox() {
     messagesEnd.current.scrollIntoView({ behavior: "smooth" });
   }
 
-  const messageBubbles = messages.map((message, index) => {
-    let isFromUser = message.sender == 2 ? true : false;
-    if (index + 1 <= messages.length - 1) {
-      if (message.sender === messages[index + 1].sender) {
+  const messageBubbles = chatList.map((message, index) => {
+    let isFromUser = message.userInfo.id == userInfo.id ? true : false;
+    if (index + 1 <= chatList.length - 1) {
+      if (message.userInfo.id == chatList[index + 1].userInfo.id) {
         return (
           <Chat
             key={index}
@@ -56,7 +74,7 @@ export default function ChatboxBox() {
             isFromUser={isFromUser}
             consecutive={false}
             body={message.body}
-            userPic={message.userPic}
+            userPic={message.userInfo.image}
           />
         );
       }
@@ -67,7 +85,7 @@ export default function ChatboxBox() {
           isFromUser={isFromUser}
           consecutive={false}
           body={message.body}
-          userPic={message.userPic}
+          userPic={message.userInfo.image}
         />
       );
     }
@@ -116,7 +134,7 @@ export default function ChatboxBox() {
             placeholder="Type message here..."
           ></div>
         </div>
-        <button className={styles["c-chatbox__button"]}>
+        <button className={styles["c-chatbox__button"]} onClick={handleSubmit}>
           <SendOutlinedIcon className={styles["c-chatbox__button-icon"]} />
         </button>
       </div>

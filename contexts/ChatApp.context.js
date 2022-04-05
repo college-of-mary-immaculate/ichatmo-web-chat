@@ -8,6 +8,7 @@ const actions = {
   SET_CONVERSATION_LIST: "SET_CONVERSATION_LIST",
   SET_USER_SEARCHED_LIST: "SET_USER_SEARCHED_LIST",
   SET_CHATS: "SET_CHATS",
+  SET_SELECTED_ROOM: "SET_SELECTED_ROOM",
   // SET_SOCKET_CONN: "SET_SOCKET_CONN",
 };
 
@@ -48,7 +49,13 @@ const reducer = (state, action) => {
     case actions.SET_CHATS:
       return {
         ...state,
-        chatList: [...action.chats],
+        chatList: [...state.chatList, action.chat],
+      };
+
+    case actions.SET_SELECTED_ROOM:
+      return {
+        ...state,
+        selectedRoom: action.selected,
       };
 
     // case actions.SET_SOCKET_CONN:
@@ -81,6 +88,7 @@ export function ChatAppProvider({ children }) {
     chatList: [],
     userSearchedList: [],
     socketConn: io(),
+    selectedChat: null,
   });
 
   const value = {
@@ -91,6 +99,7 @@ export function ChatAppProvider({ children }) {
     chatList: state.chatList,
     userSearchedList: state.userSearchedList,
     socket: state.socketConn,
+    selectedRoom: state.selectedRoom,
     setUserInfo: (userProperties) => {
       dispatch({ type: actions.SET_USER_INFO, userProperties });
     },
@@ -106,8 +115,11 @@ export function ChatAppProvider({ children }) {
     setUserSearched: (users) => {
       dispatch({ type: actions.SET_USER_SEARCHED_LIST, users });
     },
-    setChats: (chats) => {
-      dispatch({ type: actions.SET_CHATS, chats });
+    setChats: (chat) => {
+      dispatch({ type: actions.SET_CHATS, chat });
+    },
+    setSelectedRoom: (selected) => {
+      dispatch({ type: actions.SET_SELECTED_ROOM, selected });
     },
     // setSocketConn: (socket) => {
     //   dispatch({ type: actions.SET_SOCKET_CONN, socket });

@@ -9,16 +9,17 @@ export default function handler(req, res) {
     res.socket.server.io = io;
 
     io.on("connection", (socket) => {
-      socket.on("message", (msg) => {
-        socket.broadcast.emit("message-receive", {
-          sender: "other",
-          message: msg,
-        });
-        // console.log(msg);
-      });
-
       socket.on("startup", (id) => {
         socket.join(id);
+      });
+
+      socket.on("join-chat", (roomId) => {
+        console.log("joined", roomId);
+        socket.join(roomId);
+      });
+
+      socket.on("message", (message) => {
+        socket.to(message.roomId).emit("message-receive", message);
       });
     });
   }

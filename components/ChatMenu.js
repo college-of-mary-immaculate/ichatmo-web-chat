@@ -41,7 +41,7 @@ export default function ChatMenu() {
         <p className={styles["c-chat-menu__option-name"]}>Chat color</p>
         <ul className={styles["c-chat-menu__color-list"]}>{colorButtons}</ul>
       </div>
-      <div className={styles["c-chat-menu__option"]}>
+      {/* <div className={styles["c-chat-menu__option"]}>
         <p className={styles["c-chat-menu__option-name"]}>Change emoji</p>
         <div className={styles["c-chat-menu__emoji-picker"]}>
           <Picker
@@ -54,7 +54,7 @@ export default function ChatMenu() {
             // emojiSize={36}
           />
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

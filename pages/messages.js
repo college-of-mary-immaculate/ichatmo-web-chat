@@ -27,23 +27,21 @@ export async function getServerSideProps(context) {
 }
 
 export default function Messages({ data }) {
-  const { setUserInfo, newChatPopupOpen, userInfo, socket } =
-    useContext(ChatAppContext);
+  const { setUserInfo, newChatPopupOpen, socket } = useContext(ChatAppContext);
   useEffect(() => setUserInfo(data), []);
   useEffect(() => socketHandler(), []);
 
   async function socketHandler() {
     await fetch("/api/socket");
-    // socket = io();
-    // setSocketConn(socket);
-
-    // console.log(socketConn);
-
     socket.on("connect", () => {
       console.log("connected");
     });
 
-    socket.emit("startup", userInfo);
+    socket.emit("startup", data.id);
+
+    return () => {
+      socket.disconnect();
+    };
   }
 
   return (

@@ -3,16 +3,13 @@ import Image from "next/image";
 
 export default function UserItem(props) {
   return (
-    <li className={styles["c-user-item"]} role="button">
+    <li className={styles["c-user-item"]} role="button" onClick={props.onclick}>
       <div className={styles["c-user-item__image-wrap"]}>
         <Image
           className={styles["c-user-item__image"]}
           src={props.image}
           alt="user pic"
           layout="fill"
-          //   width={64}
-          //   height={64}
-          //   placeholder="blur"
         />
       </div>
       <div className={styles["c-user-item__info-wrap"]}>
