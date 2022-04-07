@@ -32,7 +32,8 @@
     "react-transition-group": "^4.4.2",
     "sass": "^1.49.9",
     "socket.io": "^4.4.1",
-    "socket.io-client": "^4.4.1"
+    "socket.io-client": "^4.4.1",
+    "use-file-picker": "^1.4.2"
   },
   "devDependencies": {
     "eslint": "8.11.0",

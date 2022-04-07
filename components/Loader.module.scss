@@ -1,0 +1,47 @@
+.c-loader {
+    width: 100%;
+    height: 100%;
+    min-height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+
+    &__circle {
+        display: block;
+        width: clamp(24px, 15%, 100px);
+        // height: clamp(24px, 15%, 64px);
+        // padding-bottom: clamp(24px, 15%, 64px);
+        // width: 64px;
+        // height: 64px;
+        background-color: transparent;
+        position: absolute;
+        border: 4px solid transparent;
+        border-radius: 50%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        aspect-ratio: 1;
+
+        &--top {
+            border-top: 4px solid dodgerblue;
+            animation: rotate 1000ms ease infinite;
+        }
+
+        &--bottom {
+            border-left: 4px solid rgba($color: dodgerblue, $alpha: 0.25);
+            border-bottom: 4px solid rgba($color: dodgerblue, $alpha: 0.25);
+            animation: rotate 3000ms ease infinite;
+        }
+    }
+}
+
+@keyframes rotate {
+    from {
+        transform: translate(-50%, -50%) rotate(0deg);
+      }
+    
+      to {
+        transform: translate(-50%, -50%) rotate(360deg);
+      }
+}

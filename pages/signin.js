@@ -65,7 +65,7 @@ export default function Login() {
           Sign In
         </button>
         <p className={styles["c-form__text"]}>
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <Link href={"/signup"}>
             <a className={styles["c-form__text--link"]}>Sign Up</a>
           </Link>

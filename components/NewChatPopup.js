@@ -1,4 +1,4 @@
-import styles from "./NewChatPopup.module.scss";
+import styles from "./NewPopup.module.scss";
 import { useState, useRef, useContext, useEffect } from "react";
 import UserItem from "./UserItem";
 import { ChatAppContext } from "../contexts/ChatApp.context";
@@ -12,6 +12,9 @@ export default function NewChatPopup() {
     userSearchedList,
     userInfo,
     setSelectedRoom,
+    selectedRoom,
+    conversationList,
+    setConversations,
     socket,
   } = useContext(ChatAppContext);
   const [inputData, setInputData] = useState("");
@@ -41,15 +44,15 @@ export default function NewChatPopup() {
   }
 
   function joinRoom(id) {
-    fetch("/api/rooms/join", {
+    fetch("/api/rooms", {
       method: "POST",
       body: JSON.stringify({ userId: userInfo.id, targetId: id }),
       headers: { "Content-Type": "application/json" },
     })
       .then((res) => res.json())
       .then((data) => {
+        socket.emit("join-chat", { newRoom: data.room, oldRoom: selectedRoom });
         setSelectedRoom(data.room);
-        socket.emit("join-chat", data.room._id);
       })
       .catch((err) => console.log(err));
 

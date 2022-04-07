@@ -1,6 +1,7 @@
 import Image from "next/image";
 import styles from "./ChatMenu.module.scss";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { ChatAppContext } from "../contexts/ChatApp.context";
 import "emoji-mart/css/emoji-mart.css";
 import ColorButton from "./ColorButton";
 import { Picker } from "emoji-mart";
@@ -12,6 +13,8 @@ import ArrowBackOutlinedIcon from "@mui/icons-material/ArrowBackOutlined";
 // });
 
 export default function ChatMenu() {
+  let { roomHeader, selectedRoom } = useContext(ChatAppContext);
+
   const colorButtons = sampleColors.map((colorItem, index) => (
     <ColorButton key={index} color={colorItem.color} />
   ));
@@ -25,22 +28,28 @@ export default function ChatMenu() {
           />
         </button>
         <div className={styles["c-chat-menu__image-wrap"]}>
-          <Image
-            className={styles["c-chat-menu__image"]}
-            src="https://res.cloudinary.com/dppgyhery/image/upload/q_auto,w_150/v1635951217/unsplash/alex-suprun-ZHvM3XIOHoE-unsplash_uluxen.jpg"
-            alt="user pic"
-            width={100}
-            height={100}
-            //   placeholder="blur"
-          />
+          {roomHeader.image && (
+            <Image
+              className={styles["c-chat-menu__image"]}
+              src={roomHeader.image}
+              alt="user pic"
+              width={100}
+              height={100}
+              //   placeholder="blur"
+            />
+          )}
         </div>
-        <h2 className={styles["c-chat-menu__name"]}>Some Name</h2>
-        <p className={styles["c-chat-menu__username"]}>someusername</p>
+        <h2 className={styles["c-chat-menu__name"]}>{roomHeader.name}</h2>
+        {selectedRoom && !selectedRoom.isGroup ? (
+          <p className={styles["c-chat-menu__username"]}>
+            {roomHeader.username}
+          </p>
+        ) : null}
       </div>
-      <div className={styles["c-chat-menu__option"]}>
+      {/* <div className={styles["c-chat-menu__option"]}>
         <p className={styles["c-chat-menu__option-name"]}>Chat color</p>
         <ul className={styles["c-chat-menu__color-list"]}>{colorButtons}</ul>
-      </div>
+      </div> */}
       {/* <div className={styles["c-chat-menu__option"]}>
         <p className={styles["c-chat-menu__option-name"]}>Change emoji</p>
         <div className={styles["c-chat-menu__emoji-picker"]}>

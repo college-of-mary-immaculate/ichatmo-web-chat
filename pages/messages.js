@@ -4,10 +4,11 @@ import TopBar from "../components/TopBar";
 import styles from "../styles/Messages.module.scss";
 import ChatMenu from "../components/ChatMenu";
 import NewChatPopup from "../components/NewChatPopup";
+import NewGroupPopup from "../components/NewGroupPopup";
 import Head from "next/head";
 // import io from "socket.io-client";
 import { useContext, useEffect } from "react";
-import { ChatAppContext } from "../contexts/ChatApp.context";
+import { ChatAppContext, ChatAppProvider } from "../contexts/ChatApp.context";
 import { getUserBasicInfo } from "../lib/user-queries";
 import { verify } from "jsonwebtoken";
 
@@ -27,9 +28,10 @@ export async function getServerSideProps(context) {
 }
 
 export default function Messages({ data }) {
-  const { setUserInfo, newChatPopupOpen, socket } = useContext(ChatAppContext);
+  const { setUserInfo, newChatPopupOpen, newGroupPopupOpen, socket } =
+    useContext(ChatAppContext);
   useEffect(() => setUserInfo(data), []);
-  useEffect(() => socketHandler(), []);
+  useEffect(() => socketHandler(), [socket]);
 
   async function socketHandler() {
     await fetch("/api/socket");
@@ -47,6 +49,7 @@ export default function Messages({ data }) {
   return (
     <div className={styles["l-container"]}>
       {newChatPopupOpen && <NewChatPopup />}
+      {newGroupPopupOpen && <NewGroupPopup />}
       <Head>
         <title>Messages | NextChat</title>
       </Head>
@@ -65,3 +68,7 @@ export default function Messages({ data }) {
     </div>
   );
 }
+
+Messages.getLayout = function getLayout(page) {
+  return <ChatAppProvider>{page}</ChatAppProvider>;
+};

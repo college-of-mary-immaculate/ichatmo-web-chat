@@ -4,39 +4,99 @@ import ArrowBackOutlinedIcon from "@mui/icons-material/ArrowBackOutlined";
 import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
 import ChatTop from "./ChatTop";
 import Chat from "./Chat";
+import Loader from "./Loader";
 import { useState, useEffect, useRef, useContext } from "react";
 import { ChatAppContext } from "../contexts/ChatApp.context";
 import styles from "./Chatbox.module.scss";
 
 export default function ChatBox() {
-  const { socket, selectedRoom, chatList, setChats, userInfo } =
-    useContext(ChatAppContext);
+  let {
+    socket,
+    selectedRoom,
+    chatList,
+    setChats,
+    userInfo,
+    emptyChats,
+    roomHeader,
+    setRoomHeader,
+  } = useContext(ChatAppContext);
   const [inputData, setInputData] = useState("");
-  // const [messages, setMessages] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const textBoxRef = useRef(null);
   const messagesEnd = useRef(null);
-
+  const chatListBox = useRef(null);
   useEffect(() => textBoxRef.current.focus(), []);
-  useEffect(() => socketHandler, [selectedRoom]);
+  useEffect(() => socketHandler(), [selectedRoom]);
+  useEffect(() => scrollToEnd(), [chatList]);
+  useEffect(() => fetchChats(), [selectedRoom]);
+  useEffect(() => {
+    let name = "";
+    let image = "";
+    let username = "";
+
+    if (selectedRoom) {
+      if (selectedRoom.isGroup) {
+        name = selectedRoom.groupName;
+        image = selectedRoom.groupImage;
+      } else if (selectedRoom.members[0]._id == selectedRoom.members[1]._id) {
+        name = selectedRoom.members[0].fullname;
+        image = selectedRoom.members[0].image;
+        username = selectedRoom.members[0].username;
+      } else {
+        for (let i = 0; i < selectedRoom.members.length; i++) {
+          if (selectedRoom.members[i]._id != userInfo.id) {
+            name = selectedRoom.members[i].fullname;
+            image = selectedRoom.members[i].image;
+            username = selectedRoom.members[i].username;
+            break;
+          }
+        }
+      }
+      // setIsLoading(false);
+      setRoomHeader({ name, image, username });
+    }
+  }, [selectedRoom]);
+
+  function fetchChats() {
+    if (selectedRoom) {
+      setIsLoading(true);
+      fetch(`/api/chats/${selectedRoom._id}`)
+        .then((res) => res.json())
+        .then((data) => {
+          emptyChats();
+          setChats(data.chats);
+          setIsLoading(false);
+          chatListBox.current.scrollTo(0, chatListBox.current.scrollHeight);
+        })
+        .catch((err) => console.log(err));
+    }
+
+    return () => {
+      emptyChats();
+      setChats([]);
+    };
+  }
 
   function socketHandler() {
     socket.on("message-receive", (message) => {
-      insertChat(message);
+      if (selectedRoom) {
+        if (selectedRoom._id == message.room) {
+          insertChat(message);
+        }
+      }
+      socket.emit("update-convos", userInfo);
     });
   }
-
-  // useEffect(() => setMessages((prevList) => [...prevList, ...sampleData]), []);
-
-  useEffect(() => scrollToEnd(), [chatList]);
 
   function handleSubmit() {
     if (inputData) {
       const message = {
-        roomId: selectedRoom._id,
-        userInfo: userInfo,
+        room: selectedRoom,
+        sender: userInfo,
         body: inputData,
       };
       socket.emit("message", message);
+      socket.emit("update-convos", userInfo);
       insertChat(message);
       textBoxRef.current.innerHTML = "";
       setInputData("");
@@ -44,7 +104,7 @@ export default function ChatBox() {
   }
 
   function insertChat(chat) {
-    setChats(chat);
+    setChats([chat]);
   }
 
   function inputChangeHandler(event) {
@@ -56,9 +116,10 @@ export default function ChatBox() {
   }
 
   const messageBubbles = chatList.map((message, index) => {
-    let isFromUser = message.userInfo.id == userInfo.id ? true : false;
+    // console.log(message);
+    let isFromUser = message.sender.id == userInfo.id ? true : false;
     if (index + 1 <= chatList.length - 1) {
-      if (message.userInfo.id == chatList[index + 1].userInfo.id) {
+      if (message.sender.id == chatList[index + 1].sender.id) {
         return (
           <Chat
             key={index}
@@ -74,7 +135,7 @@ export default function ChatBox() {
             isFromUser={isFromUser}
             consecutive={false}
             body={message.body}
-            userPic={message.userInfo.image}
+            userPic={message.sender.image}
           />
         );
       }
@@ -85,7 +146,7 @@ export default function ChatBox() {
           isFromUser={isFromUser}
           consecutive={false}
           body={message.body}
-          userPic={message.userInfo.image}
+          userPic={message.sender.image}
         />
       );
     }
@@ -93,6 +154,11 @@ export default function ChatBox() {
 
   return (
     <div className={styles["c-chatbox"]}>
+      {isLoading && (
+        <div className={styles["c-chatbox__loading"]}>
+          <Loader />
+        </div>
+      )}
       <div className={styles["c-chatbox__header"]}>
         <button
           className={`${styles["c-chatbox__button"]} ${styles["c-chatbox__button--back"]}`}
@@ -100,24 +166,26 @@ export default function ChatBox() {
           <ArrowBackOutlinedIcon className={styles["c-chatbox__button-icon"]} />
         </button>
         <div className={styles["c-chatbox__image-wrap"]}>
-          <Image
-            className={styles["c-chatbox__image"]}
-            src="https://res.cloudinary.com/dppgyhery/image/upload/q_auto,w_150/v1635951217/unsplash/alex-suprun-ZHvM3XIOHoE-unsplash_uluxen.jpg"
-            alt="user pic"
-            width={36}
-            height={36}
-            //   placeholder="blur"
-          />
+          {roomHeader.image && (
+            <Image
+              className={styles["c-chatbox__image"]}
+              src={roomHeader.image}
+              alt="user pic"
+              width={36}
+              height={36}
+              //   placeholder="blur"
+            />
+          )}
         </div>
-        <p className={styles["c-chatbox__name"]}>John Doe</p>
+        <p className={styles["c-chatbox__name"]}>{roomHeader.name}</p>
         <button
           className={`${styles["c-chatbox__button"]} ${styles["c-chatbox__button--align-right"]}`}
         >
           <MenuOpenOutlinedIcon className={styles["c-chatbox__button-icon"]} />
         </button>
       </div>
-      <ul className={styles["c-chatbox__list"]}>
-        <ChatTop />
+      <ul className={styles["c-chatbox__list"]} ref={chatListBox}>
+        <ChatTop name={roomHeader.name} image={roomHeader.image} />
         {messageBubbles}
         <li ref={messagesEnd}></li>
       </ul>
