@@ -1,6 +1,6 @@
-import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
-import PersonAddAltOutlinedIcon from "@mui/icons-material/PersonAddAltOutlined";
-import GroupAddOutlinedIcon from "@mui/icons-material/GroupAddOutlined";
+import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import PersonAddAltRoundedIcon from "@mui/icons-material/PersonAddAltRounded";
+import GroupAddRoundedIcon from "@mui/icons-material/GroupAddRounded";
 import styles from "./AddMenu.module.scss";
 import useOnClickOutside from "../utils/useOnClickOutside";
 import { ChatAppContext } from "../contexts/ChatApp.context";
@@ -40,7 +40,7 @@ export default function AddMenu() {
             className={styles["c-add-menu__button"]}
             onClick={toggleChatCreatePopup}
           >
-            <PersonAddAltOutlinedIcon
+            <PersonAddAltRoundedIcon
               className={styles["c-add-menu__button-icon"]}
             />
           </button>
@@ -50,7 +50,7 @@ export default function AddMenu() {
             className={styles["c-add-menu__button"]}
             onClick={toggleGroupCreatePopup}
           >
-            <GroupAddOutlinedIcon
+            <GroupAddRoundedIcon
               className={styles["c-add-menu__button-icon"]}
             />
           </button>
@@ -62,7 +62,7 @@ export default function AddMenu() {
         }`}
         onClick={handleClick}
       >
-        <AddOutlinedIcon className={styles["c-add-menu__main-button-icon"]} />
+        <AddRoundedIcon className={styles["c-add-menu__main-button-icon"]} />
       </button>
     </div>
   );

@@ -1,13 +1,16 @@
 import Image from "next/image";
-import MenuOpenOutlinedIcon from "@mui/icons-material/MenuOpenOutlined";
-import ArrowBackOutlinedIcon from "@mui/icons-material/ArrowBackOutlined";
-import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
+import MenuOpenRoundedIcon from "@mui/icons-material/MenuOpenRounded";
+import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
+import SendRoundedIcon from "@mui/icons-material/SendRounded";
+import InsertEmoticonRoundedIcon from "@mui/icons-material/InsertEmoticonRounded";
 import ChatTop from "./ChatTop";
 import Chat from "./Chat";
 import Loader from "./Loader";
+import useOnClickOutside from "../utils/useOnClickOutside";
 import { useState, useEffect, useRef, useContext } from "react";
 import { ChatAppContext } from "../contexts/ChatApp.context";
-import styles from "./Chatbox.module.scss";
+import { Picker } from "emoji-mart";
+import styles from "./ChatBox.module.scss";
 
 export default function ChatBox() {
   let {
@@ -22,13 +25,37 @@ export default function ChatBox() {
   } = useContext(ChatAppContext);
   const [inputData, setInputData] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [emojiToggle, setEmojiToggle] = useState(false);
+  const [menuOpenToggle, setMenuOpenToggle] = useState(false);
   const textBoxRef = useRef(null);
+  const pickerRef = useRef(null);
   const messagesEnd = useRef(null);
   const chatListBox = useRef(null);
   useEffect(() => textBoxRef.current.focus(), []);
   useEffect(() => socketHandler(), [selectedRoom]);
   useEffect(() => scrollToEnd(), [chatList]);
-  useEffect(() => fetchChats(), [selectedRoom]);
+  useEffect(async () => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+    setIsLoading(true);
+    if (selectedRoom) {
+      await fetch(`/api/chats/${selectedRoom._id}`, { signal })
+        .then((res) => res.json())
+        .then((data) => {
+          emptyChats();
+          setChats(data.chats);
+          setIsLoading(false);
+          chatListBox.current.scrollTo(0, chatListBox.current.scrollHeight);
+        })
+        .catch((err) => console.log(err));
+    }
+    return () => {
+      emptyChats();
+      if (signal && controller.abort) {
+        controller.abort();
+      }
+    };
+  }, [selectedRoom]);
   useEffect(() => {
     let name = "";
     let image = "";
@@ -57,35 +84,17 @@ export default function ChatBox() {
     }
   }, [selectedRoom]);
 
-  function fetchChats() {
-    if (selectedRoom) {
-      setIsLoading(true);
-      fetch(`/api/chats/${selectedRoom._id}`)
-        .then((res) => res.json())
-        .then((data) => {
-          emptyChats();
-          setChats(data.chats);
-          setIsLoading(false);
-          chatListBox.current.scrollTo(0, chatListBox.current.scrollHeight);
-        })
-        .catch((err) => console.log(err));
-    }
-
-    return () => {
-      emptyChats();
-      setChats([]);
-    };
-  }
-
   function socketHandler() {
-    socket.on("message-receive", (message) => {
+    const updater = (message) => {
       if (selectedRoom) {
         if (selectedRoom._id == message.room) {
           insertChat(message);
         }
       }
-      socket.emit("update-convos", userInfo);
-    });
+    };
+    socket.on("message-receive", updater);
+
+    return () => socket.off("message-receive", updater);
   }
 
   function handleSubmit() {
@@ -105,6 +114,13 @@ export default function ChatBox() {
 
   function insertChat(chat) {
     setChats([chat]);
+  }
+
+  function emojiSelectHandler(emoji) {
+    const { native } = emoji;
+    // console.log(native);
+    textBoxRef.current.innerText = textBoxRef.current.innerText + native;
+    setInputData(textBoxRef.current.innerText);
   }
 
   function inputChangeHandler(event) {
@@ -163,7 +179,7 @@ export default function ChatBox() {
         <button
           className={`${styles["c-chatbox__button"]} ${styles["c-chatbox__button--back"]}`}
         >
-          <ArrowBackOutlinedIcon className={styles["c-chatbox__button-icon"]} />
+          <ArrowBackRoundedIcon className={styles["c-chatbox__button-icon"]} />
         </button>
         <div className={styles["c-chatbox__image-wrap"]}>
           {roomHeader.image && (
@@ -171,8 +187,8 @@ export default function ChatBox() {
               className={styles["c-chatbox__image"]}
               src={roomHeader.image}
               alt="user pic"
-              width={36}
-              height={36}
+              layout="fill"
+              priority={true}
               //   placeholder="blur"
             />
           )}
@@ -181,12 +197,35 @@ export default function ChatBox() {
         <button
           className={`${styles["c-chatbox__button"]} ${styles["c-chatbox__button--align-right"]}`}
         >
-          <MenuOpenOutlinedIcon className={styles["c-chatbox__button-icon"]} />
+          <MenuOpenRoundedIcon className={styles["c-chatbox__button-icon"]} />
         </button>
       </div>
       <ul className={styles["c-chatbox__list"]} ref={chatListBox}>
         <ChatTop name={roomHeader.name} image={roomHeader.image} />
         {messageBubbles}
+        {emojiToggle && (
+          <div
+            ref={pickerRef}
+            className={styles["c-chatbox__emoji-picker-wrap"]}
+          >
+            <Picker
+              native={true}
+              // set="google"
+              // perLine={100}
+              color="dodgerblue"
+              style={{
+                backgroundColor: "#fefefe",
+                boxShadow: "0 0 4px rgba(0,0,0,0.25)",
+                border: "none",
+              }}
+              showPreview={false}
+              showSkinTones={false}
+              emojiTooltip={false}
+              emojiSize={24}
+              onSelect={emojiSelectHandler}
+            />
+          </div>
+        )}
         <li ref={messagesEnd}></li>
       </ul>
       <div className={styles["c-chatbox__form"]}>
@@ -201,9 +240,20 @@ export default function ChatBox() {
             rows="1"
             placeholder="Type message here..."
           ></div>
+
+          <button
+            className={`${styles["c-chatbox__button"]} ${styles["c-chatbox__button--absolute"]}`}
+            onClick={() => setEmojiToggle((prev) => !prev)}
+          >
+            <InsertEmoticonRoundedIcon
+              className={`${styles["c-chatbox__button-icon"]} ${styles["c-chatbox__button-icon--blue"]} ${styles["c-chatbox__button-icon--medium"]}`}
+            />
+          </button>
         </div>
         <button className={styles["c-chatbox__button"]} onClick={handleSubmit}>
-          <SendOutlinedIcon className={styles["c-chatbox__button-icon"]} />
+          <SendRoundedIcon
+            className={`${styles["c-chatbox__button-icon"]} ${styles["c-chatbox__button-icon--blue"]}`}
+          />
         </button>
       </div>
     </div>

@@ -8,6 +8,7 @@
     border-radius: 1rem;
     cursor: pointer;
     flex-shrink: 0;
+    animation: fade-in 500ms ease;
     // margin-right: 0.5rem;
 
     &:first-child {
@@ -23,13 +24,44 @@
     }
   }
 
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    } to {
+      opacity: 1;
+    }
+  }
+
   &__image-wrap {
     display: flex;
     align-items: center;
+    width: 64px;
+    height: 64px;
+    position: relative;
+    border-radius: 50%;
+    // overflow: hidden;
+    flex-shrink: 0;
+
+    &--online {
+      &::before {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        background-color: #13EE00;
+        width: 16px;
+        height: 16px;
+        border: 2px solid #fefefe;
+        border-radius: 50%;
+        z-index: 1;
+      }
+    }
   }
 
   &__image {
+    object-fit: cover;
     border-radius: 50%;
+    z-index: 0;
   }
 
   &__innerwrap {
@@ -46,6 +78,11 @@
 
   &__name {
     font-weight: 500;
+    display: inline-block;
+    width: calc(80%);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   &__preview {

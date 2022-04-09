@@ -28,9 +28,15 @@ export async function getServerSideProps(context) {
 }
 
 export default function Messages({ data }) {
-  const { setUserInfo, newChatPopupOpen, newGroupPopupOpen, socket } =
-    useContext(ChatAppContext);
+  const {
+    setUserInfo,
+    newChatPopupOpen,
+    newGroupPopupOpen,
+    socket,
+    setActiveConversationsTab,
+  } = useContext(ChatAppContext);
   useEffect(() => setUserInfo(data), []);
+  useEffect(() => setActiveConversationsTab("all"), []);
   useEffect(() => socketHandler(), [socket]);
 
   async function socketHandler() {

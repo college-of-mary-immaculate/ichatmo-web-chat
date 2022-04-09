@@ -29,7 +29,7 @@ export default function NewGroupPopup() {
     accept: "image/*",
     multiple: false,
     limitFilesConfig: { max: 1 },
-    maxFileSize: 50,
+    maxFileSize: 3,
   });
   useOnClickOutside(elementRef, () => toggleNewGroupPopup());
 
@@ -58,21 +58,6 @@ export default function NewGroupPopup() {
     }));
   }
 
-  function joinRoom(id) {
-    fetch("/api/rooms", {
-      method: "POST",
-      body: JSON.stringify({ userId: userInfo.id, targetId: id }),
-      headers: { "Content-Type": "application/json" },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        socket.emit("join-chat", { newRoom: data.room, oldRoom: selectedRoom });
-        setSelectedRoom(data.room);
-      })
-      .catch((err) => console.log(err));
-    toggleNewGroupPopup();
-  }
-
   const users = usersSearched.map((user) => {
     if (user.id !== userInfo.id) {
       return (
@@ -91,7 +76,10 @@ export default function NewGroupPopup() {
     return (
       <span key={user.id} className={styles["c-popup__added-user-pill"]}>
         {user.username}
-        <button className={styles["c-popup__user-remove-button"]}>
+        <button
+          className={styles["c-popup__user-remove-button"]}
+          onClick={() => removeAddedUser(user.id)}
+        >
           <RemoveOutlinedIcon />
         </button>
       </span>
@@ -104,6 +92,32 @@ export default function NewGroupPopup() {
     if (!selectedUsers.some((item) => item.id == id)) {
       setSelectedUsers((prev) => [...prev, { id, username }]);
     }
+  }
+
+  function removeAddedUser(userId) {
+    setSelectedUsers((prev) => [...prev.filter((user) => user.id !== userId)]);
+  }
+
+  function handleCreate() {
+    const userIds = selectedUsers.map((user) => user.id);
+    const formBody = JSON.stringify({
+      name: inputValues.groupname,
+      admin: userInfo.id,
+      image: filesContent[0].content,
+      members: [userInfo.id, ...userIds],
+    });
+    fetch("/api/rooms/group", {
+      method: "POST",
+      body: formBody,
+      headers: { "Content-Type": "application/json" },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        socket.emit("join-chat", { newRoom: data.room, oldRoom: selectedRoom });
+        setSelectedRoom(data.room);
+        toggleNewGroupPopup();
+      })
+      .catch((err) => console.log(err));
   }
 
   return (
@@ -172,7 +186,12 @@ export default function NewGroupPopup() {
           ></input>
         </div>
         <ul className={styles["c-popup__users"]}>{users}</ul>
-        <button className={styles["c-popup__create-button"]}>Create</button>
+        <button
+          className={styles["c-popup__create-button"]}
+          onClick={handleCreate}
+        >
+          Create
+        </button>
       </div>
     </div>
   );

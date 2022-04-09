@@ -10,8 +10,8 @@ export default function ChatTop(props) {
             className={styles["c-chattop__image"]}
             src={props.image}
             alt="user pic"
-            width={100}
-            height={100}
+            layout="fill"
+            priority={true}
             //   placeholder="blur"
           />
         )}

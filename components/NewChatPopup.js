@@ -44,7 +44,7 @@ export default function NewChatPopup() {
   }
 
   function joinRoom(id) {
-    fetch("/api/rooms", {
+    fetch("/api/rooms/private", {
       method: "POST",
       body: JSON.stringify({ userId: userInfo.id, targetId: id }),
       headers: { "Content-Type": "application/json" },

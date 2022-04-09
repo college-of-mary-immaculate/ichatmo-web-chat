@@ -10,7 +10,7 @@
 
   &__loading {
     grid-row: 1 / -1;
-    background-color: #f8f8f8;
+    background-color: #fefefe;
     
     padding: 0.75rem;
     display: flex;
@@ -44,6 +44,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
     // padding: 1em;
 
     &--align-right {
@@ -55,22 +56,31 @@
         display: none;
       }
     }
+  }
 
-    &-icon {
+  &__button-icon {
+    width: 32px;
+    height: 32px;
+
+    &--medium {
       width: 24px;
       height: 24px;
+    }
 
-      &--medium {
-        width: 36px;
-        height: 36px;
-      }
+    &--blue {
+      color: dodgerblue;
     }
   }
 
   &__image-wrap {
-    overflow: hidden;
     display: flex;
     align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
     border-radius: 50%;
     margin: 0 0.75rem;
 
@@ -78,6 +88,10 @@
       margin-left: 0;
     }
   }
+
+  &__image {
+    object-fit: cover;
+  } 
 
   &__name {
     font-weight: 500;
@@ -87,14 +101,26 @@
     display: flex;
     flex-direction: column;
     overflow-y: scroll;
-    background-color: #f8f8f8;
+    background-color: #fefefe;
     z-index: 0;
+    position: relative;
     // width: 100%;
     // height: 100%;
     min-height: 100%;
     // max-height: 0;
   }
 
+  &__emoji-picker-wrap {
+    display: flex;
+    justify-content: flex-end;
+    position: sticky;
+    right: 0; bottom: 0;
+    padding: 0.75rem;  
+    margin-top: -55%;
+    width: auto;
+    // box-shadow: 0 4px 4px rgba($color: #000000, $alpha: 0.25);
+    // max-height: 300px;
+  }
   &__form {
     border-top: 1px solid lightgray;
     background-color: #fefefe;
@@ -109,7 +135,9 @@
     border-radius: 1rem;
     background-color: #ededed;
     display: flex;
+    align-items: flex-end;
     margin-right: 0.75rem;
+    position: relative;
   }
 
   &__input {
@@ -122,6 +150,9 @@
     word-break: break-all;
     flex-shrink: 1;
     font-size: 0.875rem;
+    margin-right: 0.75em;
+    margin-top: auto;
+    margin-bottom: auto;
 
     &:focus {
       outline: none;

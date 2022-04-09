@@ -1,0 +1,69 @@
+.c-chat-member {
+    padding: 0.5rem 0.75rem;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    border-radius: 1rem;
+    flex-shrink: 0;
+
+    // &:hover {
+    //   background-color: #f4f4f4;
+    // }
+
+    &__image-wrap {
+        display: flex;
+        align-items: center;
+        width: 36px;
+        height: 36px;
+        position: relative;
+        overflow: hidden;
+        flex-shrink: 0;
+
+        &--online {
+          &::before {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background-color: #13EE00;
+            width: 12px;
+            height:12px;
+            border: 2px solid #fefefe;
+            border-radius: 50%;
+            z-index: 1;
+          }
+        }
+      }
+
+      &__image {
+        object-fit: cover;
+        border-radius: 50%;
+      }
+
+    &__innerwrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 0.5rem;
+    width: 100%;
+    min-width: 0;
+
+    &--center {
+        justify-content: center;
+    }
+    }
+
+    &__name {
+    font-weight: 400;
+    display: inline-block;
+    width: calc(80%);
+    white-space: nowrap;
+    overflow: hidden;
+    font-size: 0.875rem;
+    text-overflow: ellipsis;
+    }
+
+    &__admin-icon {
+        color: gray;
+    }
+}

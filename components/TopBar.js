@@ -1,5 +1,5 @@
 import Image from "next/image";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import styles from "./TopBar.module.scss";
 import { ChatAppContext } from "../contexts/ChatApp.context";
 import { useContext, useEffect, useState } from "react";
@@ -20,15 +20,16 @@ export default function TopBar() {
               src={userInfo.image}
               alt="user pic"
               layout="fill"
+              priority={true}
               // width={36}
               // height={36}
               //   placeholder="blur"
             />
           )}
         </div>
-        <button className={styles["c-topbar__button"]}>
-          <SettingsOutlinedIcon className={styles["c-topbar__icon"]} />
-        </button>
+        {/* <button className={styles["c-topbar__button"]}>
+          <SettingsRoundedIcon className={styles["c-topbar__icon"]} />
+        </button> */}
       </div>
     </div>
   );

@@ -4,8 +4,8 @@ import { useState, useContext } from "react";
 import { ChatAppContext } from "../contexts/ChatApp.context";
 import "emoji-mart/css/emoji-mart.css";
 import ColorButton from "./ColorButton";
-import { Picker } from "emoji-mart";
 import sampleColors from "../lib/sample-color";
+import ChatMember from "./ChatMember";
 import ArrowBackOutlinedIcon from "@mui/icons-material/ArrowBackOutlined";
 // import dynamic from "next/dynamic";
 // const Picker = dynamic(() => import("emoji-picker-react"), {
@@ -13,11 +13,44 @@ import ArrowBackOutlinedIcon from "@mui/icons-material/ArrowBackOutlined";
 // });
 
 export default function ChatMenu() {
-  let { roomHeader, selectedRoom } = useContext(ChatAppContext);
+  let { roomHeader, selectedRoom, userInfo } = useContext(ChatAppContext);
 
   const colorButtons = sampleColors.map((colorItem, index) => (
     <ColorButton key={index} color={colorItem.color} />
   ));
+
+  async function deleteGroup() {
+    await fetch(`/api/rooms/${selectedRoom._id}`, { method: "DELETE" }).then(
+      (data) => console.log(data)
+    );
+  }
+
+  const chatMembers =
+    selectedRoom && selectedRoom.isGroup
+      ? selectedRoom.members
+          .sort((a, b) => a.fullname.localeCompare(b.fullname))
+          .map((user) => {
+            if (user.id == selectedRoom.groupAdmin._id) {
+              return (
+                <ChatMember
+                  key={user._id}
+                  userId={user.id}
+                  name={user.fullname}
+                  image={user.image}
+                  isAdmin={true}
+                />
+              );
+            }
+            return (
+              <ChatMember
+                key={user._id}
+                userId={user.id}
+                name={user.fullname}
+                image={user.image}
+              />
+            );
+          })
+      : null;
 
   return (
     <div className={styles["c-chat-menu"]}>
@@ -33,8 +66,8 @@ export default function ChatMenu() {
               className={styles["c-chat-menu__image"]}
               src={roomHeader.image}
               alt="user pic"
-              width={100}
-              height={100}
+              layout="fill"
+              priority={true}
               //   placeholder="blur"
             />
           )}
@@ -46,10 +79,23 @@ export default function ChatMenu() {
           </p>
         ) : null}
       </div>
-      {/* <div className={styles["c-chat-menu__option"]}>
-        <p className={styles["c-chat-menu__option-name"]}>Chat color</p>
-        <ul className={styles["c-chat-menu__color-list"]}>{colorButtons}</ul>
-      </div> */}
+      {selectedRoom && selectedRoom.isGroup ? (
+        <ul className={styles["c-chat-menu__members"]}>{chatMembers}</ul>
+      ) : null}
+      <div className={styles["c-chat-menu__option"]}>
+        {/* <p className={styles["c-chat-menu__option-name"]}>Chat color</p>
+        <ul className={styles["c-chat-menu__color-list"]}>{colorButtons}</ul> */}
+        {selectedRoom &&
+        selectedRoom.isGroup &&
+        userInfo.id == selectedRoom.groupAdmin._id ? (
+          <button
+            className={styles["c-chat-menu__delete-button"]}
+            onClick={async () => await deleteGroup()}
+          >
+            Delete group
+          </button>
+        ) : null}
+      </div>
       {/* <div className={styles["c-chat-menu__option"]}>
         <p className={styles["c-chat-menu__option-name"]}>Change emoji</p>
         <div className={styles["c-chat-menu__emoji-picker"]}>

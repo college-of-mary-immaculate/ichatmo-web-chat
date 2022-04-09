@@ -5,12 +5,14 @@ const actions = {
   SET_USER_INFO: "SET_USER_INFO",
   TOGGLE_NEW_CHAT_POPUP: "TOGGLE_NEW_CHAT_POPUP",
   TOGGLE_NEW_GROUP_POPUP: "TOGGLE_NEW_GROUP_POPUP",
-  SET_CONVERSATION_LIST: "SET_CONVERSATION_LIST",
+  SET_CONVERSATIONS: "SET_CONVERSATIONS",
   SET_USER_SEARCHED_LIST: "SET_USER_SEARCHED_LIST",
   SET_CHATS: "SET_CHATS",
   EMPTY_CHATS: "EMPTY_CHATS",
+  EMPTY_CONVERSATIONS: "EMPTY_CONVERSATIONS",
   SET_SELECTED_ROOM: "SET_SELECTED_ROOM",
   SET_ROOM_HEADER: "SET_ROOM_HEADER",
+  SET_ACTIVE_CONVERSATIONS_TAB: "SET_ACTIVE_CONVERSATIONS_TAB",
   // SET_SOCKET_CONN: "SET_SOCKET_CONN",
 };
 
@@ -36,10 +38,15 @@ const reducer = (state, action) => {
         newGroupPopupOpen: !state.newGroupPopupOpen,
       };
 
-    case actions.SET_CONVERSATION_LIST:
+    case actions.SET_CONVERSATIONS:
       return {
         ...state,
-        conversationList: [...action.conversations],
+        conversationList: [
+          ...action.conversations,
+          ...state.conversationList.filter(
+            (conversation) => conversation._id !== action.conversations[0]._id
+          ),
+        ],
       };
 
     case actions.SET_USER_SEARCHED_LIST:
@@ -60,10 +67,22 @@ const reducer = (state, action) => {
         chatList: [],
       };
 
+    case actions.EMPTY_CONVERSATIONS:
+      return {
+        ...state,
+        conversationList: [],
+      };
+
     case actions.SET_SELECTED_ROOM:
       return {
         ...state,
         selectedRoom: action.selected,
+      };
+
+    case actions.SET_ACTIVE_CONVERSATIONS_TAB:
+      return {
+        ...state,
+        activeConversationsTab: action.tab,
       };
 
     case actions.SET_ROOM_HEADER:
@@ -104,6 +123,7 @@ export function ChatAppProvider({ children }) {
     socketConn: io(),
     selectedChat: null,
     roomHeader: { name: "", image: "", username: "" },
+    activeConversationsTab: "",
   });
 
   const value = {
@@ -116,6 +136,7 @@ export function ChatAppProvider({ children }) {
     socket: state.socketConn,
     selectedRoom: state.selectedRoom,
     roomHeader: state.roomHeader,
+    activeConversationsTab: state.activeConversationsTab,
     setUserInfo: (userProperties) => {
       dispatch({ type: actions.SET_USER_INFO, userProperties });
     },
@@ -126,7 +147,7 @@ export function ChatAppProvider({ children }) {
       dispatch({ type: actions.TOGGLE_NEW_GROUP_POPUP });
     },
     setConversations: (conversations) => {
-      dispatch({ type: actions.SET_CONVERSATION_LIST, conversations });
+      dispatch({ type: actions.SET_CONVERSATIONS, conversations });
     },
     setUserSearched: (users) => {
       dispatch({ type: actions.SET_USER_SEARCHED_LIST, users });
@@ -137,11 +158,17 @@ export function ChatAppProvider({ children }) {
     emptyChats: () => {
       dispatch({ type: actions.EMPTY_CHATS });
     },
+    emptyConversations: () => {
+      dispatch({ type: actions.EMPTY_CONVERSATIONS });
+    },
     setSelectedRoom: (selected) => {
       dispatch({ type: actions.SET_SELECTED_ROOM, selected });
     },
     setRoomHeader: (header) => {
       dispatch({ type: actions.SET_ROOM_HEADER, header });
+    },
+    setActiveConversationsTab: (tab) => {
+      dispatch({ type: actions.SET_ACTIVE_CONVERSATIONS_TAB, tab });
     },
     // setSocketConn: (socket) => {
     //   dispatch({ type: actions.SET_SOCKET_CONN, socket });

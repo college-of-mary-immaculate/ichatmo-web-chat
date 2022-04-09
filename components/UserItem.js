@@ -10,6 +10,7 @@ export default function UserItem(props) {
           src={props.image}
           alt="user pic"
           layout="fill"
+          priority={true}
         />
       </div>
       <div className={styles["c-user-item__info-wrap"]}>

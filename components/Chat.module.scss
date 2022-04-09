@@ -44,11 +44,20 @@
     font-size: 0.875rem;
     word-break: break-all;
     white-space: pre-wrap;
+    animation: fade-in 500ms ease;
 
     &--user {
       border-radius: 1rem 1rem 0 1rem;
       background-color: dodgerblue;
       color: white;
+    }
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    } to {
+      opacity: 1;
     }
   }
 }

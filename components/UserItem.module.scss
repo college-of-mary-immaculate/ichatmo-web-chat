@@ -22,13 +22,14 @@
         width: 64px;
         height: 64px;
         border-radius: 50%;
-        overflow: hidden;
         position: relative;
         flex-shrink: 0;
+
     }
 
     &__image {
         object-fit: cover;
+        z-index: 0;
     }
 
     &__info-wrap {

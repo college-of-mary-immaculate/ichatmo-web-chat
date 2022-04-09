@@ -9,49 +9,73 @@ import Loader from "./Loader";
 export default function ConversationList() {
   let {
     setConversations,
+    emptyConversations,
     conversationList,
     userInfo,
     setSelectedRoom,
     selectedRoom,
     socket,
+    activeConversationsTab,
+    setActiveConversationsTab,
   } = useContext(ChatAppContext);
 
   const [isLoading, setIsLoading] = useState(true);
-  const [isUpdated, setIsUpdated] = useState(true);
 
-  useEffect(() => socketHandler(), [socket]);
-  useEffect(() => {
-    fetch(`/api/rooms/users/${userInfo.id}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setConversations(data.rooms);
-        if (!selectedRoom) {
-          setSelectedRoom(data.rooms[0]);
-          socket.emit("join-chat", { newRoom: data.rooms[0] });
-        }
-        setIsLoading(false);
-        setIsUpdated(true);
+  useEffect(() => socketHandler(), [activeConversationsTab]);
+  useEffect(async () => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+    setIsLoading(true);
+    if (userInfo.id) {
+      await fetch(`/api/rooms/${activeConversationsTab}/${userInfo.id}`, {
+        signal,
       })
-      .catch((err) => console.log(err));
-
+        .then((res) => res.json())
+        .then((data) => {
+          emptyConversations();
+          setConversations(data.rooms);
+          if (!selectedRoom) {
+            setSelectedRoom(data.rooms[0]);
+            socket.emit("join-chat", { newRoom: data.rooms[0] });
+          }
+          setIsLoading(false);
+          // setIsUpdated(true);
+        })
+        .catch((err) => console.log(err));
+    }
     return () => {
-      setConversations([]);
-      setIsUpdated(true);
+      emptyConversations();
+      if (signal && controller.abort) {
+        controller.abort();
+      }
     };
-  }, [isUpdated]);
+  }, [userInfo, activeConversationsTab]);
 
   function socketHandler() {
-    console.log(socket);
-    socket.on("update-list", (updated) => {
-      console.log("called");
-      setIsUpdated(updated);
-    });
+    const updater = (updatedRoom) => {
+      if (updatedRoom.room.isGroup && activeConversationsTab == "group") {
+        setConversations([updatedRoom.room]);
+      } else if (
+        !updatedRoom.room.isGroup &&
+        activeConversationsTab == "private"
+      ) {
+        setConversations([updatedRoom.room]);
+      } else if (activeConversationsTab == "all") {
+        setConversations([updatedRoom.room]);
+      }
+    };
+    socket.on("update-list", updater);
+
+    return () => socket.off("update-list", updater);
   }
 
   const conversationItems = conversationList.map((conversation) => {
     let privateConvoReceiver = null;
     let latestChatSender = "";
     let latestChatBody = "";
+    let chatMembers = conversation.members
+      .filter((member) => member._id !== userInfo.id)
+      .map((member) => member._id);
 
     if (conversation.latestChat) {
       latestChatSender =
@@ -65,6 +89,8 @@ export default function ConversationList() {
       return (
         <ConversationItem
           key={conversation._id}
+          isGroup={true}
+          members={chatMembers}
           name={conversation.groupName}
           image={conversation.groupImage}
           latestChatSender={latestChatSender}
@@ -78,6 +104,8 @@ export default function ConversationList() {
       return (
         <ConversationItem
           key={conversation._id}
+          isGroup={false}
+          members={[conversation.members[0]._id]}
           name={`(You) ${conversation.members[0].fullname}`}
           image={conversation.members[0].image}
           latestChatSender={latestChatSender}
@@ -97,6 +125,8 @@ export default function ConversationList() {
     return (
       <ConversationItem
         key={conversation._id}
+        isGroup={false}
+        members={chatMembers}
         name={privateConvoReceiver.fullname}
         image={privateConvoReceiver.image}
         latestChatSender={latestChatSender}
@@ -129,15 +159,45 @@ export default function ConversationList() {
       </div>
       <ul className={styles["c-conversations__tabs"]}>
         <li
-          className={`${styles["c-conversations__tab-item"]} ${styles["c-conversations__tab-item--active"]}`}
+          className={`${styles["c-conversations__tab-item"]} ${
+            activeConversationsTab == "all"
+              ? styles["c-conversations__tab-item--active"]
+              : ""
+          }`}
+          role="button"
+          onClick={() => setActiveConversationsTab("all")}
         >
           All
         </li>
-        <li className={styles["c-conversations__tab-item"]}>Private</li>
-        <li className={styles["c-conversations__tab-item"]}>Group</li>
+        <li
+          className={`${styles["c-conversations__tab-item"]} ${
+            activeConversationsTab == "private"
+              ? styles["c-conversations__tab-item--active"]
+              : ""
+          }`}
+          role="button"
+          onClick={() => setActiveConversationsTab("private")}
+        >
+          Private
+        </li>
+        <li
+          className={`${styles["c-conversations__tab-item"]} ${
+            activeConversationsTab == "group"
+              ? styles["c-conversations__tab-item--active"]
+              : ""
+          }`}
+          role="button"
+          onClick={() => setActiveConversationsTab("group")}
+        >
+          Group
+        </li>
       </ul>
       <ul className={styles["c-conversations__list"]}>
-        {isLoading && <Loader />}
+        {isLoading && (
+          <li className={styles["c-conversations__loader-bg"]}>
+            <Loader />
+          </li>
+        )}
         {/* {!conversationList.length && !isLoading ? (
           <li className={styles["c-conversations__empty"]}>
             You have no conversations

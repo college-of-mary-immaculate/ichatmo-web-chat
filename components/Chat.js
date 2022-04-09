@@ -16,6 +16,7 @@ export default function Chat(props) {
               src={props.userPic}
               alt="user pic"
               layout="fill"
+              priority={true}
               // width={36}
               // height={36}
             />
