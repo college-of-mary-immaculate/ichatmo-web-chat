@@ -7,6 +7,7 @@ const actions = {
   TOGGLE_NEW_GROUP_POPUP: "TOGGLE_NEW_GROUP_POPUP",
   SET_CONVERSATIONS: "SET_CONVERSATIONS",
   SET_USER_SEARCHED_LIST: "SET_USER_SEARCHED_LIST",
+  SET_ROOM_SEARCHED_LIST: "SET_ROOM_SEARCHED_LIST",
   SET_CHATS: "SET_CHATS",
   EMPTY_CHATS: "EMPTY_CHATS",
   EMPTY_CONVERSATIONS: "EMPTY_CONVERSATIONS",
@@ -53,6 +54,12 @@ const reducer = (state, action) => {
       return {
         ...state,
         userSearchedList: [...action.users],
+      };
+
+    case actions.SET_ROOM_SEARCHED_LIST:
+      return {
+        ...state,
+        roomSearchedList: [...action.rooms],
       };
 
     case actions.SET_CHATS:
@@ -120,9 +127,10 @@ export function ChatAppProvider({ children }) {
     conversationList: [],
     chatList: [],
     userSearchedList: [],
+    roomSearchedList: [],
     socketConn: io(),
     selectedChat: null,
-    roomHeader: { name: "", image: "", username: "" },
+    roomHeader: { name: "", image: "", username: "", members: [] },
     activeConversationsTab: "",
   });
 
@@ -133,6 +141,7 @@ export function ChatAppProvider({ children }) {
     conversationList: state.conversationList,
     chatList: state.chatList,
     userSearchedList: state.userSearchedList,
+    roomSearchedList: state.roomSearchedList,
     socket: state.socketConn,
     selectedRoom: state.selectedRoom,
     roomHeader: state.roomHeader,
@@ -151,6 +160,9 @@ export function ChatAppProvider({ children }) {
     },
     setUserSearched: (users) => {
       dispatch({ type: actions.SET_USER_SEARCHED_LIST, users });
+    },
+    setRoomSearched: (rooms) => {
+      dispatch({ type: actions.SET_ROOM_SEARCHED_LIST, rooms });
     },
     setChats: (chats) => {
       dispatch({ type: actions.SET_CHATS, chats });

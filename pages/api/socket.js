@@ -34,7 +34,6 @@ export default function handler(req, res) {
             userIds.toCheckIds.includes(id)
           ),
           toCheckIds: userIds.toCheckIds,
-          // user: userIds.toCheckIds,
         });
       });
 
@@ -49,7 +48,6 @@ export default function handler(req, res) {
         if (rooms.oldRoom) {
           socket.leave(rooms.oldRoom._id);
         }
-        // console.log("joined", rooms.newRoom);
         socket.join(rooms.newRoom._id);
       });
 

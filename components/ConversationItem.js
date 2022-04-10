@@ -6,44 +6,9 @@ import useRoomOnlineCheck from "../utils/useRoomOnlineCheck";
 import styles from "./ConversationItem.module.scss";
 
 export default function ConversationItem(props) {
-  // const [isOnline, setIsOnline] = useState(false);
   let { socket, userInfo } = useContext(ChatAppContext);
   const [isOnline] = useRoomOnlineCheck(userInfo.id, props.members, socket);
 
-  // useEffect(() => socketHandler(), []);
-  // useEffect(() => {
-  //   socket.emit("online-check", {
-  //     client: userInfo.id,
-  //     toCheckIds: props.members,
-  //   });
-  // }, []);
-
-  // function socketHandler() {
-  //   const onlineUpdater = (id) => {
-  //     if (props.members.includes(id)) {
-  //       socket.emit("online-check", {
-  //         client: userInfo.id,
-  //         toCheckIds: props.members,
-  //       });
-  //     }
-  //   };
-
-  //   const onlineToggler = (result) => {
-  //     if (JSON.stringify(result.toCheckIds) == JSON.stringify(props.members)) {
-  //       setIsOnline(result.isOnline);
-  //     }
-  //   };
-
-  //   socket.on("user-connect", onlineUpdater);
-  //   socket.on("user-disconnect", onlineUpdater);
-  //   socket.on("is-online", onlineToggler);
-
-  //   return () => {
-  //     socket.off("user-connect", onlineUpdater);
-  //     socket.off("user-disconnect", onlineUpdater);
-  //     socket.off("user-online", onlineToggler);
-  //   };
-  // }
   return (
     <li className={styles["c-conversations__item"]} onClick={props.onclick}>
       <div

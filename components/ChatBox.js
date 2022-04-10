@@ -1,12 +1,9 @@
-import Image from "next/image";
-import MenuOpenRoundedIcon from "@mui/icons-material/MenuOpenRounded";
-import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import SendRoundedIcon from "@mui/icons-material/SendRounded";
 import InsertEmoticonRoundedIcon from "@mui/icons-material/InsertEmoticonRounded";
 import ChatTop from "./ChatTop";
 import Chat from "./Chat";
 import Loader from "./Loader";
-import useOnClickOutside from "../utils/useOnClickOutside";
+import ChatBoxHeader from "./ChatBoxHeader";
 import { useState, useEffect, useRef, useContext } from "react";
 import { ChatAppContext } from "../contexts/ChatApp.context";
 import { Picker } from "emoji-mart";
@@ -31,6 +28,7 @@ export default function ChatBox() {
   const pickerRef = useRef(null);
   const messagesEnd = useRef(null);
   const chatListBox = useRef(null);
+  let chatBoxHeader = null;
   useEffect(() => textBoxRef.current.focus(), []);
   useEffect(() => socketHandler(), [selectedRoom]);
   useEffect(() => scrollToEnd(), [chatList]);
@@ -57,11 +55,14 @@ export default function ChatBox() {
     };
   }, [selectedRoom]);
   useEffect(() => {
-    let name = "";
-    let image = "";
-    let username = "";
-
     if (selectedRoom) {
+      let name = "";
+      let image = "";
+      let username = "";
+      let members = selectedRoom.members
+        .filter((member) => member._id !== userInfo.id)
+        .map((member) => member._id);
+
       if (selectedRoom.isGroup) {
         name = selectedRoom.groupName;
         image = selectedRoom.groupImage;
@@ -69,6 +70,7 @@ export default function ChatBox() {
         name = selectedRoom.members[0].fullname;
         image = selectedRoom.members[0].image;
         username = selectedRoom.members[0].username;
+        members = [selectedRoom.members[0]._id];
       } else {
         for (let i = 0; i < selectedRoom.members.length; i++) {
           if (selectedRoom.members[i]._id != userInfo.id) {
@@ -79,8 +81,7 @@ export default function ChatBox() {
           }
         }
       }
-      // setIsLoading(false);
-      setRoomHeader({ name, image, username });
+      setRoomHeader({ name, image, username, members });
     }
   }, [selectedRoom]);
 
@@ -175,31 +176,7 @@ export default function ChatBox() {
           <Loader />
         </div>
       )}
-      <div className={styles["c-chatbox__header"]}>
-        <button
-          className={`${styles["c-chatbox__button"]} ${styles["c-chatbox__button--back"]}`}
-        >
-          <ArrowBackRoundedIcon className={styles["c-chatbox__button-icon"]} />
-        </button>
-        <div className={styles["c-chatbox__image-wrap"]}>
-          {roomHeader.image && (
-            <Image
-              className={styles["c-chatbox__image"]}
-              src={roomHeader.image}
-              alt="user pic"
-              layout="fill"
-              priority={true}
-              //   placeholder="blur"
-            />
-          )}
-        </div>
-        <p className={styles["c-chatbox__name"]}>{roomHeader.name}</p>
-        <button
-          className={`${styles["c-chatbox__button"]} ${styles["c-chatbox__button--align-right"]}`}
-        >
-          <MenuOpenRoundedIcon className={styles["c-chatbox__button-icon"]} />
-        </button>
-      </div>
+      <ChatBoxHeader />
       <ul className={styles["c-chatbox__list"]} ref={chatListBox}>
         <ChatTop name={roomHeader.name} image={roomHeader.image} />
         {messageBubbles}

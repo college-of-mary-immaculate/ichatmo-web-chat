@@ -3,13 +3,13 @@ import { useState, useEffect } from "react";
 export default function useUserOnlineCheck(client, userId, socket) {
   const [isOnline, setIsOnline] = useState(false);
 
-  useEffect(() => socketHandler(), []);
+  useEffect(() => socketHandler(), [userId]);
   useEffect(() => {
     socket.emit("user-online-check", {
       client,
       toCheckId: userId,
     });
-  }, []);
+  }, [userId]);
 
   function socketHandler() {
     const onlineUpdater = (id) => {
@@ -25,7 +25,6 @@ export default function useUserOnlineCheck(client, userId, socket) {
       if (result.toCheckId == userId) {
         setIsOnline(result.isOnline);
       }
-      console.log(result);
     };
 
     socket.on("user-connect", onlineUpdater);

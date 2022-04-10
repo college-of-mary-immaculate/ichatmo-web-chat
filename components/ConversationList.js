@@ -3,6 +3,7 @@ import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import styles from "./ConversationList.module.scss";
 import AddMenu from "./AddMenu";
 import { ChatAppContext } from "../contexts/ChatApp.context";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { useContext, useEffect, useState } from "react";
 import Loader from "./Loader";
 
@@ -14,12 +15,16 @@ export default function ConversationList() {
     userInfo,
     setSelectedRoom,
     selectedRoom,
+    setRoomSearched,
+    roomSearchedList,
     socket,
     activeConversationsTab,
     setActiveConversationsTab,
   } = useContext(ChatAppContext);
 
   const [isLoading, setIsLoading] = useState(true);
+  const [searchedListVisible, setSearchedListVisible] = useState(false);
+  const [inputData, setInputData] = useState("");
 
   useEffect(() => socketHandler(), [activeConversationsTab]);
   useEffect(async () => {
@@ -27,7 +32,7 @@ export default function ConversationList() {
     const signal = controller.signal;
     setIsLoading(true);
     if (userInfo.id) {
-      await fetch(`/api/rooms/${activeConversationsTab}/${userInfo.id}`, {
+      await fetch(`/api/rooms/${activeConversationsTab}`, {
         signal,
       })
         .then((res) => res.json())
@@ -50,6 +55,29 @@ export default function ConversationList() {
       }
     };
   }, [userInfo, activeConversationsTab]);
+  useEffect(() => {
+    if (inputData) {
+      setIsLoading(true);
+      const controller = new AbortController();
+      const signal = controller.signal;
+      fetch(`/api/rooms/search/${activeConversationsTab}/${inputData}`, {
+        signal,
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setRoomSearched(data.rooms);
+          setIsLoading(false);
+        })
+        .catch((err) => console.log(err));
+
+      return () => {
+        setRoomSearched([]);
+        if (signal && controller.abort) {
+          controller.abort();
+        }
+      };
+    }
+  }, [inputData, activeConversationsTab]);
 
   function socketHandler() {
     const updater = (updatedRoom) => {
@@ -69,74 +97,87 @@ export default function ConversationList() {
     return () => socket.off("update-list", updater);
   }
 
-  const conversationItems = conversationList.map((conversation) => {
-    let privateConvoReceiver = null;
-    let latestChatSender = "";
-    let latestChatBody = "";
-    let chatMembers = conversation.members
-      .filter((member) => member._id !== userInfo.id)
-      .map((member) => member._id);
+  function inputChangeHandler(event) {
+    setInputData(event.target.value);
+  }
 
-    if (conversation.latestChat) {
-      latestChatSender =
-        conversation.latestChat.sender._id == userInfo.id
-          ? "You"
-          : conversation.latestChat.sender.firstname;
-      latestChatBody = conversation.latestChat.body;
+  const conversationItems = createConversationItems(conversationList);
+
+  const searchedItems = createConversationItems(roomSearchedList);
+
+  function createConversationItems(conversations) {
+    if (conversations) {
+      return conversations.map((conversation) => {
+        let privateConvoReceiver = null;
+        let latestChatSender = "";
+        let latestChatBody = "";
+        let chatMembers = conversation.members
+          .filter((member) => member._id !== userInfo.id)
+          .map((member) => member._id);
+
+        if (conversation.latestChat) {
+          latestChatSender =
+            conversation.latestChat.sender._id == userInfo.id
+              ? "You"
+              : conversation.latestChat.sender.firstname;
+          latestChatBody = conversation.latestChat.body;
+        }
+
+        if (conversation.isGroup) {
+          return (
+            <ConversationItem
+              key={conversation._id}
+              isGroup={true}
+              members={chatMembers}
+              name={conversation.groupName}
+              image={conversation.groupImage}
+              latestChatSender={latestChatSender}
+              latestChatBody={latestChatBody}
+              onclick={() => joinRoom(conversation)}
+            />
+          );
+        }
+
+        if (conversation.members[0]._id == conversation.members[1]._id) {
+          return (
+            <ConversationItem
+              key={conversation._id}
+              isGroup={false}
+              members={[conversation.members[0]._id]}
+              name={`(You) ${conversation.members[0].fullname}`}
+              image={conversation.members[0].image}
+              latestChatSender={latestChatSender}
+              latestChatBody={latestChatBody}
+              onclick={() => joinRoom(conversation)}
+            />
+          );
+        }
+
+        for (let i = 0; i < conversation.members.length; i++) {
+          if (conversation.members[i]._id != userInfo.id) {
+            privateConvoReceiver = conversation.members[i];
+            break;
+          }
+        }
+
+        return (
+          <ConversationItem
+            key={conversation._id}
+            isGroup={false}
+            members={chatMembers}
+            name={privateConvoReceiver.fullname}
+            image={privateConvoReceiver.image}
+            latestChatSender={latestChatSender}
+            latestChatBody={latestChatBody}
+            onclick={() => joinRoom(conversation)}
+          />
+        );
+      });
     }
-
-    if (conversation.isGroup) {
-      return (
-        <ConversationItem
-          key={conversation._id}
-          isGroup={true}
-          members={chatMembers}
-          name={conversation.groupName}
-          image={conversation.groupImage}
-          latestChatSender={latestChatSender}
-          latestChatBody={latestChatBody}
-          onclick={() => joinRoom(conversation)}
-        />
-      );
-    }
-
-    if (conversation.members[0]._id == conversation.members[1]._id) {
-      return (
-        <ConversationItem
-          key={conversation._id}
-          isGroup={false}
-          members={[conversation.members[0]._id]}
-          name={`(You) ${conversation.members[0].fullname}`}
-          image={conversation.members[0].image}
-          latestChatSender={latestChatSender}
-          latestChatBody={latestChatBody}
-          onclick={() => joinRoom(conversation)}
-        />
-      );
-    }
-
-    for (let i = 0; i < conversation.members.length; i++) {
-      if (conversation.members[i]._id != userInfo.id) {
-        privateConvoReceiver = conversation.members[i];
-        break;
-      }
-    }
-
-    return (
-      <ConversationItem
-        key={conversation._id}
-        isGroup={false}
-        members={chatMembers}
-        name={privateConvoReceiver.fullname}
-        image={privateConvoReceiver.image}
-        latestChatSender={latestChatSender}
-        latestChatBody={latestChatBody}
-        onclick={() => joinRoom(conversation)}
-      />
-    );
-  });
+  }
 
   function joinRoom(room) {
+    setSearchedListVisible(false);
     if (selectedRoom._id !== room._id) {
       console.log("rejoin");
       socket.emit("join-chat", { newRoom: room, oldRoom: selectedRoom });
@@ -154,8 +195,20 @@ export default function ConversationList() {
           <input
             placeholder="Search conversations"
             className={styles["c-conversations__searchbar-input"]}
+            onChange={inputChangeHandler}
+            onFocus={() => setSearchedListVisible(true)}
           ></input>
         </div>
+        {searchedListVisible && (
+          <button
+            className={styles["c-conversations__close-searched-button"]}
+            onClick={() => setSearchedListVisible(false)}
+          >
+            <CloseRoundedIcon
+              className={styles["c-conversations__close-searched-button-icon"]}
+            />
+          </button>
+        )}
       </div>
       <ul className={styles["c-conversations__tabs"]}>
         <li
@@ -192,19 +245,25 @@ export default function ConversationList() {
           Group
         </li>
       </ul>
-      <ul className={styles["c-conversations__list"]}>
-        {isLoading && (
-          <li className={styles["c-conversations__loader-bg"]}>
-            <Loader />
-          </li>
-        )}
-        {/* {!conversationList.length && !isLoading ? (
-          <li className={styles["c-conversations__empty"]}>
-            You have no conversations
-          </li>
-        ) : null} */}
-        {conversationItems}
-      </ul>
+      {isLoading && (
+        <div className={styles["c-conversations__loader-bg"]}>
+          <Loader />
+        </div>
+      )}
+      {searchedListVisible ? (
+        <ul className={styles["c-conversations__searched-list"]}>
+          {searchedItems}
+        </ul>
+      ) : (
+        <ul className={styles["c-conversations__list"]}>
+          {/* {!conversationList.length && !isLoading ? (
+        <li className={styles["c-conversations__empty"]}>
+          You have no conversations
+        </li>
+      ) : null} */}
+          {conversationItems}
+        </ul>
+      )}
       <AddMenu />
     </div>
   );

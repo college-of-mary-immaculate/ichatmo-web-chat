@@ -3,7 +3,7 @@ import { useState, useRef, useContext, useEffect } from "react";
 import UserItem from "./UserItem";
 import { ChatAppContext } from "../contexts/ChatApp.context";
 import useOnClickOutside from "../utils/useOnClickOutside";
-import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
 export default function NewChatPopup() {
   const {
@@ -86,7 +86,7 @@ export default function NewChatPopup() {
             className={styles["c-popup__close-button"]}
             onClick={() => toggleNewChatPopup()}
           >
-            <CloseOutlinedIcon />
+            <CloseRoundedIcon />
           </button>
         </div>
 

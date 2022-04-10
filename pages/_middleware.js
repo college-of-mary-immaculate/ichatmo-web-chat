@@ -19,7 +19,6 @@ export default function middleware(req) {
 
   if (splitUrl[1] == "messages") {
     if (!jwt || !verify(jwt, secret)) {
-      console.log(true);
       url.pathname = "/signin";
       return NextResponse.redirect(url);
     }

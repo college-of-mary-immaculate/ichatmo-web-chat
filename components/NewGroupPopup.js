@@ -4,9 +4,9 @@ import Image from "next/image";
 import UserItem from "./UserItem";
 import { ChatAppContext } from "../contexts/ChatApp.context";
 import useOnClickOutside from "../utils/useOnClickOutside";
-import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
-import AddPhotoAlternateOutlinedIcon from "@mui/icons-material/AddPhotoAlternateOutlined";
-import RemoveOutlinedIcon from "@mui/icons-material/RemoveOutlined";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import AddPhotoAlternateRoundedIcon from "@mui/icons-material/AddPhotoAlternateRounded";
+import RemoveRoundedIcon from "@mui/icons-material/RemoveRounded";
 import { useFilePicker } from "use-file-picker";
 
 export default function NewGroupPopup() {
@@ -80,7 +80,7 @@ export default function NewGroupPopup() {
           className={styles["c-popup__user-remove-button"]}
           onClick={() => removeAddedUser(user.id)}
         >
-          <RemoveOutlinedIcon />
+          <RemoveRoundedIcon />
         </button>
       </span>
     );
@@ -132,7 +132,7 @@ export default function NewGroupPopup() {
             className={styles["c-popup__close-button"]}
             onClick={() => toggleNewGroupPopup()}
           >
-            <CloseOutlinedIcon />
+            <CloseRoundedIcon />
           </button>
         </div>
         <div className={styles["c-popup__img-selector-wrap"]}>
@@ -153,7 +153,7 @@ export default function NewGroupPopup() {
               //     alt={filesContent[0].name}
               //     src={filesContent[0].content}
               //   />
-              <AddPhotoAlternateOutlinedIcon
+              <AddPhotoAlternateRoundedIcon
                 className={styles["c-popup__img-selector-button-icon"]}
               />
             )}
@@ -172,7 +172,7 @@ export default function NewGroupPopup() {
           {/* <span className={styles["c-popup__added-user"]}>
             username
             <button className={styles["c-popup__user-remove-button"]}>
-              <RemoveOutlinedIcon />
+              <RemoveRoundedIcon />
             </button>
           </span> */}
           <input

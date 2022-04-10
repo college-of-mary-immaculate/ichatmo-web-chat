@@ -3,8 +3,10 @@ import {
   createGroup,
   getRooms,
   getRoom,
+  searchRooms,
   deleteGroup,
 } from "../../../lib/room-queries";
+import { verify } from "jsonwebtoken";
 
 export default async function handler(req, res) {
   const { slug } = req.query;
@@ -25,14 +27,22 @@ export default async function handler(req, res) {
 
     result = await deleteGroup(id);
   } else if (req.method == "GET") {
-    const [type, id] = slug;
-    console.log(type, id);
-    if (type == "all" || type == "private" || type == "group") {
-      result = await getRooms(id, type);
-    } else if (type == "single") {
-      result = await getRoom(id);
+    const { cookies } = req;
+    const jwt = cookies.chatjwt;
+    const { userId } = verify(jwt, process.env.JWT_SECRET);
+    if (slug[0] == "search") {
+      const [, type, query] = slug;
+      result = await searchRooms(type, query, userId);
     } else {
-      return res.status(404).json({ message: "not found" });
+      const [type] = slug;
+      if (type == "all" || type == "private" || type == "group") {
+        result = await getRooms(userId, type);
+      } else if (type == "single") {
+        const [, id] = slug;
+        result = await getRoom(id);
+      } else {
+        return res.status(404).json({ message: "not found" });
+      }
     }
   }
 

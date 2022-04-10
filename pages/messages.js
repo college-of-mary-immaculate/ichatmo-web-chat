@@ -37,7 +37,7 @@ export default function Messages({ data }) {
   } = useContext(ChatAppContext);
   useEffect(() => setUserInfo(data), []);
   useEffect(() => setActiveConversationsTab("all"), []);
-  useEffect(() => socketHandler(), [socket]);
+  useEffect(() => socketHandler(), []);
 
   async function socketHandler() {
     await fetch("/api/socket");
