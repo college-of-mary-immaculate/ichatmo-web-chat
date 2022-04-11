@@ -40,16 +40,16 @@ export default function Messages({ data }) {
   useEffect(() => socketHandler(), []);
 
   async function socketHandler() {
-    await fetch("/api/socket");
-    socket.on("connect", () => {
-      console.log("connected");
-    });
+    // await fetch("/api/socket");
+    // socket.on("connect", () => {
+    //   console.log("connected");
+    // });
 
     socket.emit("startup", data.id);
 
-    return () => {
-      socket.disconnect();
-    };
+    // return () => {
+    //   socket.disconnect();
+    // };
   }
 
   return (

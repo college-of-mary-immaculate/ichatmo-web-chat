@@ -3,13 +3,13 @@ import { useState, useEffect } from "react";
 export default function useRoomOnlineCheck(client, members, socket) {
   const [isOnline, setIsOnline] = useState(false);
 
-  useEffect(() => socketHandler(), [members]);
+  useEffect(() => socketHandler(), [members, socket]);
   useEffect(() => {
     socket.emit("room-online-check", {
       client,
       toCheckIds: members,
     });
-  }, [members]);
+  }, [members, socket]);
 
   function socketHandler() {
     const onlineUpdater = (id) => {

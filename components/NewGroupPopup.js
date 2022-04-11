@@ -13,12 +13,14 @@ export default function NewGroupPopup() {
   const {
     toggleNewGroupPopup,
     userInfo,
+    setUserSearched,
+    userSearchedList,
     setSelectedRoom,
     selectedRoom,
     socket,
   } = useContext(ChatAppContext);
   const [selectedUsers, setSelectedUsers] = useState([]);
-  const [usersSearched, setUsersSearched] = useState([]);
+  // const [usersSearched, setUsersSearched] = useState([]);
   const [inputValues, setInputValues] = useState({
     groupname: "",
     user: "",
@@ -39,7 +41,7 @@ export default function NewGroupPopup() {
       const signal = controller.signal;
       fetch(`/api/users/${inputValues.user}`, { signal })
         .then((res) => res.json())
-        .then((data) => setUsersSearched([...data.users]))
+        .then((data) => setUserSearched([...data.users]))
         .catch((err) => console.log(err));
 
       return () => {
@@ -58,7 +60,7 @@ export default function NewGroupPopup() {
     }));
   }
 
-  const users = usersSearched.map((user) => {
+  const users = userSearchedList.map((user) => {
     if (user.id !== userInfo.id) {
       return (
         <UserItem
@@ -188,7 +190,7 @@ export default function NewGroupPopup() {
         <ul className={styles["c-popup__users"]}>{users}</ul>
         <button
           className={styles["c-popup__create-button"]}
-          onClick={handleCreate}
+          onClick={() => handleCreate()}
         >
           Create
         </button>

@@ -28,16 +28,15 @@ export default function ChatBox() {
   const pickerRef = useRef(null);
   const messagesEnd = useRef(null);
   const chatListBox = useRef(null);
-  let chatBoxHeader = null;
   useEffect(() => textBoxRef.current.focus(), []);
   useEffect(() => socketHandler(), [selectedRoom]);
   useEffect(() => scrollToEnd(), [chatList]);
-  useEffect(async () => {
+  useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
     setIsLoading(true);
     if (selectedRoom) {
-      await fetch(`/api/chats/${selectedRoom._id}`, { signal })
+      fetch(`/api/chats/${selectedRoom._id}`, { signal })
         .then((res) => res.json())
         .then((data) => {
           emptyChats();
@@ -54,6 +53,7 @@ export default function ChatBox() {
       }
     };
   }, [selectedRoom]);
+
   useEffect(() => {
     if (selectedRoom) {
       let name = "";

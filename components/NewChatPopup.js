@@ -13,8 +13,6 @@ export default function NewChatPopup() {
     userInfo,
     setSelectedRoom,
     selectedRoom,
-    conversationList,
-    setConversations,
     socket,
   } = useContext(ChatAppContext);
   const [inputData, setInputData] = useState("");
@@ -55,8 +53,6 @@ export default function NewChatPopup() {
         setSelectedRoom(data.room);
       })
       .catch((err) => console.log(err));
-
-    // socket.emit("join-chat", selectedChat._id);
     toggleNewChatPopup();
   }
 

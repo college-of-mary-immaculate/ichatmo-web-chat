@@ -27,12 +27,12 @@ export default function ConversationList() {
   const [inputData, setInputData] = useState("");
 
   useEffect(() => socketHandler(), [activeConversationsTab]);
-  useEffect(async () => {
+  useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
     setIsLoading(true);
     if (userInfo.id) {
-      await fetch(`/api/rooms/${activeConversationsTab}`, {
+      fetch(`/api/rooms/${activeConversationsTab}`, {
         signal,
       })
         .then((res) => res.json())

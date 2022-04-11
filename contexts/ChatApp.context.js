@@ -1,5 +1,5 @@
-import React, { createContext, useReducer } from "react";
-import io from "socket.io-client";
+import React, { createContext, useReducer, useLayoutEffect } from "react";
+// import io from "socket.io-client";
 
 const actions = {
   SET_USER_INFO: "SET_USER_INFO",
@@ -59,7 +59,16 @@ const reducer = (state, action) => {
     case actions.SET_ROOM_SEARCHED_LIST:
       return {
         ...state,
-        roomSearchedList: [...action.rooms],
+        roomSearchedList: [
+          ...action.rooms,
+          ...state.roomSearchedList.filter((room) => {
+            let list = action.rooms.map((room) => room._id);
+            if (!list.includes(room._id) && list.includes(room._id)) {
+              return true;
+            }
+            return false;
+          }),
+        ],
       };
 
     case actions.SET_CHATS:
@@ -128,7 +137,7 @@ export function ChatAppProvider({ children }) {
     chatList: [],
     userSearchedList: [],
     roomSearchedList: [],
-    socketConn: io(),
+    socketConn: null,
     selectedChat: null,
     roomHeader: { name: "", image: "", username: "", members: [] },
     activeConversationsTab: "",
@@ -182,10 +191,26 @@ export function ChatAppProvider({ children }) {
     setActiveConversationsTab: (tab) => {
       dispatch({ type: actions.SET_ACTIVE_CONVERSATIONS_TAB, tab });
     },
-    // setSocketConn: (socket) => {
-    //   dispatch({ type: actions.SET_SOCKET_CONN, socket });
-    // },
+    setSocketConn: (socket) => {
+      dispatch({ type: actions.SET_SOCKET_CONN, socket });
+    },
   };
+
+  // useLayoutEffect(() => {
+  //   const setSocket = async () => {
+  //     await fetch("/api/socket");
+  //     state.socketConn = io();
+  //     state.socketConn.on("connect", () => {
+  //       console.log("connected");
+  //     });
+  //   };
+
+  //   setSocket().catch((err) => console.log(err));
+
+  //   return () => {
+  //     state.socketConn.disconnect();
+  //   };
+  // }, []);
 
   return (
     <ChatAppContext.Provider value={value}>{children}</ChatAppContext.Provider>
