@@ -1,15 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { ChatAppContext } from "../contexts/ChatApp.context";
 
-export default function useRoomOnlineCheck(client, members, socket) {
+export default function useRoomOnlineCheck(client, members) {
   const [isOnline, setIsOnline] = useState(false);
+  const { socket } = useContext(ChatAppContext);
 
-  useEffect(() => socketHandler(), [members, socket]);
+  useEffect(() => socketHandler(), [members]);
   useEffect(() => {
     socket.emit("room-online-check", {
       client,
       toCheckIds: members,
     });
-  }, [members, socket]);
+  }, [members]);
 
   function socketHandler() {
     const onlineUpdater = (id) => {

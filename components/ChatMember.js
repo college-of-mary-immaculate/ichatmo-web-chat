@@ -7,13 +7,13 @@ import { useContext } from "react";
 
 export default function ChatMember(props) {
   const { socket, userInfo } = useContext(ChatAppContext);
-  const [isOnline] = useUserOnlineCheck(userInfo.id, props.userId, socket);
+  const [isOnline] = useUserOnlineCheck(userInfo._id, props.userId, socket);
 
   return (
     <li className={styles["c-chat-member"]}>
       <div
         className={`${styles["c-chat-member__image-wrap"]} ${
-          isOnline || userInfo.id == props.userId
+          isOnline || userInfo._id == props.userId
             ? styles["c-chat-member__image-wrap--online"]
             : ""
         }`}

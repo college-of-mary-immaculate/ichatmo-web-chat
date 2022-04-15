@@ -24,7 +24,7 @@ export default function NewChatPopup() {
     if (inputData) {
       const controller = new AbortController();
       const signal = controller.signal;
-      fetch(`/api/users/${inputData}`, { signal })
+      fetch(`/api/users/search/${inputData}`, { signal })
         .then((res) => res.json())
         .then((data) => setUserSearched(data.users))
         .catch((err) => console.log(err));
@@ -44,12 +44,15 @@ export default function NewChatPopup() {
   function joinRoom(id) {
     fetch("/api/rooms/private", {
       method: "POST",
-      body: JSON.stringify({ userId: userInfo.id, targetId: id }),
+      body: JSON.stringify({ userId: userInfo._id, targetId: id }),
       headers: { "Content-Type": "application/json" },
     })
       .then((res) => res.json())
       .then((data) => {
-        socket.emit("join-chat", { newRoom: data.room, oldRoom: selectedRoom });
+        socket.emit("join-chat", {
+          newRoom: data.room,
+          oldRoom: selectedRoom,
+        });
         setSelectedRoom(data.room);
       })
       .catch((err) => console.log(err));
@@ -57,13 +60,13 @@ export default function NewChatPopup() {
   }
 
   const users = userSearchedList.map((user) => {
-    if (user.id !== userInfo.id) {
+    if (user.id !== userInfo._id) {
       return (
         <UserItem
           key={user.id}
           fullname={user.fullname}
           username={user.username}
-          image={user.image}
+          image={user.image.url}
           onclick={() => joinRoom(user.id)}
         />
       );
@@ -77,7 +80,7 @@ export default function NewChatPopup() {
         ref={elementRef}
       >
         <div className={styles["c-popup__header-wrap"]}>
-          <h2 className={styles["c-popup__name"]}>New Chat</h2>
+          <h2 className={styles["c-popup__label"]}>New Chat</h2>
           <button
             className={styles["c-popup__close-button"]}
             onClick={() => toggleNewChatPopup()}
@@ -89,13 +92,15 @@ export default function NewChatPopup() {
         {/* <p className={styles["c-popup__description"]}>
           Create a new conversation with another user
         </p> */}
-        <input
-          type="text"
-          value={inputData}
-          placeholder="Enter name or username"
-          className={styles["c-popup__input"]}
-          onChange={inputChangeHandler}
-        ></input>
+        <div className={styles["c-popup__input-wrap"]}>
+          <input
+            type="text"
+            value={inputData}
+            placeholder="Enter name or username"
+            className={styles["c-popup__input"]}
+            onChange={inputChangeHandler}
+          ></input>
+        </div>
         <ul className={styles["c-popup__users"]}>{users}</ul>
         {/* <button className={styles["c-popup__button"]}>Create</button> */}
       </div>

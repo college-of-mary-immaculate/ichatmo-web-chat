@@ -3,8 +3,11 @@ import { useState, useRef, useContext, useEffect } from "react";
 import Image from "next/image";
 import UserItem from "./UserItem";
 import { ChatAppContext } from "../contexts/ChatApp.context";
+import Loader from "./Loader";
 import useOnClickOutside from "../utils/useOnClickOutside";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import ErrorRoundedIcon from "@mui/icons-material/ErrorRounded";
+import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
 import AddPhotoAlternateRoundedIcon from "@mui/icons-material/AddPhotoAlternateRounded";
 import RemoveRoundedIcon from "@mui/icons-material/RemoveRounded";
 import { useFilePicker } from "use-file-picker";
@@ -25,21 +28,26 @@ export default function NewGroupPopup() {
     groupname: "",
     user: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
   const elementRef = useRef(null);
-  const [openFileSelector, { filesContent }] = useFilePicker({
+  const [openFileSelector, { filesContent, errors }] = useFilePicker({
     readAs: "DataURL",
     accept: "image/*",
     multiple: false,
     limitFilesConfig: { max: 1 },
     maxFileSize: 3,
   });
-  useOnClickOutside(elementRef, () => toggleNewGroupPopup());
+  useOnClickOutside(elementRef, () => {
+    if (!isLoading) {
+      toggleProfilePopup();
+    }
+  });
 
   useEffect(() => {
     if (inputValues.user) {
       const controller = new AbortController();
       const signal = controller.signal;
-      fetch(`/api/users/${inputValues.user}`, { signal })
+      fetch(`/api/users/search/${inputValues.user}`, { signal })
         .then((res) => res.json())
         .then((data) => setUserSearched([...data.users]))
         .catch((err) => console.log(err));
@@ -61,13 +69,13 @@ export default function NewGroupPopup() {
   }
 
   const users = userSearchedList.map((user) => {
-    if (user.id !== userInfo.id) {
+    if (user.id !== userInfo._id) {
       return (
         <UserItem
           key={user.id}
           fullname={user.fullname}
           username={user.username}
-          image={user.image}
+          image={user.image.url}
           onclick={() => addUser(user)}
         />
       );
@@ -104,10 +112,11 @@ export default function NewGroupPopup() {
     const userIds = selectedUsers.map((user) => user.id);
     const formBody = JSON.stringify({
       name: inputValues.groupname,
-      admin: userInfo.id,
+      admin: userInfo._id,
       image: filesContent[0].content,
-      members: [userInfo.id, ...userIds],
+      members: [userInfo._id, ...userIds],
     });
+    setIsLoading(true);
     fetch("/api/rooms/group", {
       method: "POST",
       body: formBody,
@@ -115,8 +124,12 @@ export default function NewGroupPopup() {
     })
       .then((res) => res.json())
       .then((data) => {
-        socket.emit("join-chat", { newRoom: data.room, oldRoom: selectedRoom });
+        socket.emit("join-chat", {
+          newRoom: data.room,
+          oldRoom: selectedRoom,
+        });
         setSelectedRoom(data.room);
+        setIsLoading(false);
         toggleNewGroupPopup();
       })
       .catch((err) => console.log(err));
@@ -124,12 +137,24 @@ export default function NewGroupPopup() {
 
   return (
     <div className={`${styles["c-popup"]} ${styles["c-popup--fade-in"]}`}>
+      {isLoading && (
+        <div className={styles["c-popup__loader-bg"]}>
+          <div className={styles["c-popup__loader"]}>
+            <div className={styles["c-popup__loader-wrap"]}>
+              <Loader />
+            </div>
+            <p className={styles["c-user-popup__loader-text"]}>
+              Creating group...
+            </p>
+          </div>
+        </div>
+      )}
       <div
         className={`${styles["c-popup__wrap"]} ${styles["c-popup__wrap--group"]} ${styles["c-popup__wrap--scale-in"]}`}
         ref={elementRef}
       >
         <div className={styles["c-popup__header-wrap"]}>
-          <h2 className={styles["c-popup__name"]}>New Group</h2>
+          <h2 className={styles["c-popup__label"]}>New Group</h2>
           <button
             className={styles["c-popup__close-button"]}
             onClick={() => toggleNewGroupPopup()}
@@ -150,50 +175,93 @@ export default function NewGroupPopup() {
                 layout="fill"
               />
             ) : (
-              //   <img
-              //     className={styles["c-popup__selected-image"]}
-              //     alt={filesContent[0].name}
-              //     src={filesContent[0].content}
-              //   />
               <AddPhotoAlternateRoundedIcon
                 className={styles["c-popup__img-selector-button-icon"]}
               />
             )}
           </button>
+          {errors.length ? (
+            <div className={styles["c-popup__image-errors-wrap"]}>
+              <p
+                className={`${styles["c-popup__error"]} ${styles["c-popup__error--centered"]}`}
+              >
+                <span className={styles["c-popup__error-icon-wrap"]}>
+                  <ErrorRoundedIcon className={styles["c-popup__error-icon"]} />
+                </span>
+                {errors[0].fileSizeToolarge &&
+                  "File is too large, please choose a file that is less than 3mb"}
+                {errors[0].readerError && "Problem occured while reading file!"}
+                {errors[0].maxLimitExceeded && "Too many files"}
+              </p>
+            </div>
+          ) : null}
         </div>
-        <input
-          type="text"
-          name="groupname"
-          value={inputValues.groupname}
-          placeholder="Enter group name"
-          className={styles["c-popup__input"]}
-          onChange={inputChangeHandler}
-        ></input>
-        <div className={styles["c-popup__user-add-wrap"]}>
-          {selectedUserPills}
-          {/* <span className={styles["c-popup__added-user"]}>
-            username
-            <button className={styles["c-popup__user-remove-button"]}>
-              <RemoveRoundedIcon />
-            </button>
-          </span> */}
+        <div className={styles["c-popup__input-wrap"]}>
           <input
             type="text"
-            value={inputValues.user}
-            name={"user"}
-            autoComplete="off"
-            placeholder="Enter name or username"
-            className={`${styles["c-popup__input"]} ${styles["c-popup__input--inline"]}`}
+            name="groupname"
+            value={inputValues.groupname}
+            placeholder="Enter group name"
+            className={styles["c-popup__input"]}
             onChange={inputChangeHandler}
           ></input>
+          {!inputValues.groupname.length && (
+            <div className={styles["c-popup__input-info-wrap"]}>
+              <p className={`${styles["c-popup__info-text"]}`}>
+                <span className={styles["c-popup__info-icon-wrap"]}>
+                  <InfoRoundedIcon className={styles["c-popup__info-icon"]} />
+                </span>{" "}
+                A group name is required
+              </p>
+            </div>
+          )}
+        </div>
+        <div className={styles["c-popup__input-wrap"]}>
+          <div className={styles["c-popup__user-add-wrap"]}>
+            {selectedUserPills}
+            <input
+              type="text"
+              value={inputValues.user}
+              name={"user"}
+              autoComplete="off"
+              placeholder="Enter name or username"
+              className={`${styles["c-popup__input"]} ${styles["c-popup__input--inline"]}`}
+              onChange={inputChangeHandler}
+            ></input>
+          </div>
+          {selectedUsers.length < 2 && (
+            <div className={styles["c-popup__input-info-wrap"]}>
+              <p className={`${styles["c-popup__info-text"]}`}>
+                <span className={styles["c-popup__info-icon-wrap"]}>
+                  <InfoRoundedIcon className={styles["c-popup__info-icon"]} />
+                </span>{" "}
+                Group must have atleast 2 participants
+              </p>
+            </div>
+          )}
         </div>
         <ul className={styles["c-popup__users"]}>{users}</ul>
-        <button
-          className={styles["c-popup__create-button"]}
-          onClick={() => handleCreate()}
-        >
-          Create
-        </button>
+        <div className={styles["c-popup__bottom-wrap"]}>
+          <button
+            className={`${styles["c-popup__button"]} ${styles["c-popup__button--filled"]}`}
+            onClick={() => handleCreate()}
+            disabled={
+              !(
+                inputValues.groupname.length &&
+                selectedUsers.length > 1 &&
+                filesContent.length
+              )
+            }
+          >
+            Create
+          </button>
+          <button
+            className={`${styles["c-popup__button"]} ${styles["c-popup__button--text"]}`}
+            onClick={() => toggleNewGroupPopup()}
+          >
+            Cancel
+          </button>
+        </div>
       </div>
     </div>
   );

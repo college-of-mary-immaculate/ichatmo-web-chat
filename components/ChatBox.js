@@ -4,13 +4,14 @@ import ChatTop from "./ChatTop";
 import Chat from "./Chat";
 import Loader from "./Loader";
 import ChatBoxHeader from "./ChatBoxHeader";
+import useOnClickOutside from "../utils/useOnClickOutside";
 import { useState, useEffect, useRef, useContext } from "react";
 import { ChatAppContext } from "../contexts/ChatApp.context";
 import { Picker } from "emoji-mart";
 import styles from "./ChatBox.module.scss";
 
 export default function ChatBox() {
-  let {
+  const {
     socket,
     selectedRoom,
     chatList,
@@ -23,11 +24,11 @@ export default function ChatBox() {
   const [inputData, setInputData] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [emojiToggle, setEmojiToggle] = useState(false);
-  const [menuOpenToggle, setMenuOpenToggle] = useState(false);
   const textBoxRef = useRef(null);
   const pickerRef = useRef(null);
   const messagesEnd = useRef(null);
   const chatListBox = useRef(null);
+  useOnClickOutside(pickerRef, () => setEmojiToggle());
   useEffect(() => textBoxRef.current.focus(), []);
   useEffect(() => socketHandler(), [selectedRoom]);
   useEffect(() => scrollToEnd(), [chatList]);
@@ -60,22 +61,22 @@ export default function ChatBox() {
       let image = "";
       let username = "";
       let members = selectedRoom.members
-        .filter((member) => member._id !== userInfo.id)
+        .filter((member) => member._id !== userInfo._id)
         .map((member) => member._id);
 
       if (selectedRoom.isGroup) {
         name = selectedRoom.groupName;
-        image = selectedRoom.groupImage;
+        image = selectedRoom.groupImage.url;
       } else if (selectedRoom.members[0]._id == selectedRoom.members[1]._id) {
         name = selectedRoom.members[0].fullname;
-        image = selectedRoom.members[0].image;
+        image = selectedRoom.members[0].image.url;
         username = selectedRoom.members[0].username;
         members = [selectedRoom.members[0]._id];
       } else {
         for (let i = 0; i < selectedRoom.members.length; i++) {
-          if (selectedRoom.members[i]._id != userInfo.id) {
+          if (selectedRoom.members[i]._id != userInfo._id) {
             name = selectedRoom.members[i].fullname;
-            image = selectedRoom.members[i].image;
+            image = selectedRoom.members[i].image.url;
             username = selectedRoom.members[i].username;
             break;
           }
@@ -134,7 +135,7 @@ export default function ChatBox() {
 
   const messageBubbles = chatList.map((message, index) => {
     // console.log(message);
-    let isFromUser = message.sender.id == userInfo.id ? true : false;
+    let isFromUser = message.sender.id == userInfo._id ? true : false;
     if (index + 1 <= chatList.length - 1) {
       if (message.sender.id == chatList[index + 1].sender.id) {
         return (
@@ -152,7 +153,7 @@ export default function ChatBox() {
             isFromUser={isFromUser}
             consecutive={false}
             body={message.body}
-            userPic={message.sender.image}
+            userPic={message.sender.image.url}
           />
         );
       }
@@ -163,7 +164,7 @@ export default function ChatBox() {
           isFromUser={isFromUser}
           consecutive={false}
           body={message.body}
-          userPic={message.sender.image}
+          userPic={message.sender.image.url}
         />
       );
     }
@@ -180,29 +181,6 @@ export default function ChatBox() {
       <ul className={styles["c-chatbox__list"]} ref={chatListBox}>
         <ChatTop name={roomHeader.name} image={roomHeader.image} />
         {messageBubbles}
-        {emojiToggle && (
-          <div
-            ref={pickerRef}
-            className={styles["c-chatbox__emoji-picker-wrap"]}
-          >
-            <Picker
-              native={true}
-              // set="google"
-              // perLine={100}
-              color="dodgerblue"
-              style={{
-                backgroundColor: "#fefefe",
-                boxShadow: "0 0 4px rgba(0,0,0,0.25)",
-                border: "none",
-              }}
-              showPreview={false}
-              showSkinTones={false}
-              emojiTooltip={false}
-              emojiSize={24}
-              onSelect={emojiSelectHandler}
-            />
-          </div>
-        )}
         <li ref={messagesEnd}></li>
       </ul>
       <div className={styles["c-chatbox__form"]}>
@@ -217,15 +195,40 @@ export default function ChatBox() {
             rows="1"
             placeholder="Type message here..."
           ></div>
-
-          <button
-            className={`${styles["c-chatbox__button"]} ${styles["c-chatbox__button--absolute"]}`}
-            onClick={() => setEmojiToggle((prev) => !prev)}
+          <div
+            ref={pickerRef}
+            className={styles["c-chatbox__emoji-picker-wrap"]}
           >
-            <InsertEmoticonRoundedIcon
-              className={`${styles["c-chatbox__button-icon"]} ${styles["c-chatbox__button-icon--blue"]} ${styles["c-chatbox__button-icon--medium"]}`}
-            />
-          </button>
+            {emojiToggle && (
+              <div className={styles["c-chatbox__emoji-picker"]}>
+                <Picker
+                  native={true}
+                  // set="google"
+                  // perLine={100}
+                  color="dodgerblue"
+                  style={{
+                    backgroundColor: "#fefefe",
+                    boxShadow: "0 0 4px rgba(0,0,0,0.25)",
+                    border: "none",
+                  }}
+                  showPreview={false}
+                  showSkinTones={false}
+                  emojiTooltip={false}
+                  skin={1}
+                  emojiSize={24}
+                  onSelect={emojiSelectHandler}
+                />
+              </div>
+            )}
+            <button
+              className={`${styles["c-chatbox__button"]}`}
+              onClick={() => setEmojiToggle((prev) => !prev)}
+            >
+              <InsertEmoticonRoundedIcon
+                className={`${styles["c-chatbox__button-icon"]} ${styles["c-chatbox__button-icon--blue"]} ${styles["c-chatbox__button-icon--medium"]}`}
+              />
+            </button>
+          </div>
         </div>
         <button className={styles["c-chatbox__button"]} onClick={handleSubmit}>
           <SendRoundedIcon

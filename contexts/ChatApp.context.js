@@ -1,10 +1,15 @@
-import React, { createContext, useReducer, useLayoutEffect } from "react";
-// import io from "socket.io-client";
+import React, { createContext, useReducer, useEffect } from "react";
+import { io } from "socket.io-client";
+
+let socket = io();
 
 const actions = {
   SET_USER_INFO: "SET_USER_INFO",
   TOGGLE_NEW_CHAT_POPUP: "TOGGLE_NEW_CHAT_POPUP",
   TOGGLE_NEW_GROUP_POPUP: "TOGGLE_NEW_GROUP_POPUP",
+  TOGGLE_PROFILE_POPUP: "TOGGLE_PROFILE_POPUP",
+  SHOW_CHATBOX: "SHOW_CHATBOX",
+  TOGGLE_CHATMENU: "TOGGLE_CHATMENU",
   SET_CONVERSATIONS: "SET_CONVERSATIONS",
   SET_USER_SEARCHED_LIST: "SET_USER_SEARCHED_LIST",
   SET_ROOM_SEARCHED_LIST: "SET_ROOM_SEARCHED_LIST",
@@ -37,6 +42,24 @@ const reducer = (state, action) => {
       return {
         ...state,
         newGroupPopupOpen: !state.newGroupPopupOpen,
+      };
+
+    case actions.TOGGLE_PROFILE_POPUP:
+      return {
+        ...state,
+        profilePopupOpen: !state.profilePopupOpen,
+      };
+
+    case actions.SHOW_CHATBOX:
+      return {
+        ...state,
+        chatBoxOpen: action.show,
+      };
+
+    case actions.TOGGLE_CHATMENU:
+      return {
+        ...state,
+        chatMenuOpen: !state.chatMenuOpen,
       };
 
     case actions.SET_CONVERSATIONS:
@@ -123,21 +146,17 @@ export const ChatAppContext = createContext();
 
 export function ChatAppProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, {
-    userInfo: {
-      id: "",
-      username: "",
-      email: "",
-      firstname: "",
-      lastname: "",
-      image: "",
-    },
+    userInfo: {},
     newChatPopupOpen: false,
     newGroupPopupOpen: false,
+    profilePopupOpen: false,
+    chatBoxOpen: false,
+    chatMenuOpen: false,
     conversationList: [],
     chatList: [],
     userSearchedList: [],
     roomSearchedList: [],
-    socketConn: null,
+    socketConn: socket,
     selectedChat: null,
     roomHeader: { name: "", image: "", username: "", members: [] },
     activeConversationsTab: "",
@@ -147,14 +166,17 @@ export function ChatAppProvider({ children }) {
     userInfo: state.userInfo,
     newChatPopupOpen: state.newChatPopupOpen,
     newGroupPopupOpen: state.newGroupPopupOpen,
+    profilePopupOpen: state.profilePopupOpen,
+    chatBoxOpen: state.chatBoxOpen,
+    chatMenuOpen: state.chatMenuOpen,
     conversationList: state.conversationList,
     chatList: state.chatList,
     userSearchedList: state.userSearchedList,
     roomSearchedList: state.roomSearchedList,
-    socket: state.socketConn,
     selectedRoom: state.selectedRoom,
     roomHeader: state.roomHeader,
     activeConversationsTab: state.activeConversationsTab,
+    socket: state.socketConn,
     setUserInfo: (userProperties) => {
       dispatch({ type: actions.SET_USER_INFO, userProperties });
     },
@@ -163,6 +185,15 @@ export function ChatAppProvider({ children }) {
     },
     toggleNewGroupPopup: () => {
       dispatch({ type: actions.TOGGLE_NEW_GROUP_POPUP });
+    },
+    toggleProfilePopup: () => {
+      dispatch({ type: actions.TOGGLE_PROFILE_POPUP });
+    },
+    showChatBox: (show) => {
+      dispatch({ type: actions.SHOW_CHATBOX, show });
+    },
+    toggleChatMenu: () => {
+      dispatch({ type: actions.TOGGLE_CHATMENU });
     },
     setConversations: (conversations) => {
       dispatch({ type: actions.SET_CONVERSATIONS, conversations });
@@ -191,26 +222,25 @@ export function ChatAppProvider({ children }) {
     setActiveConversationsTab: (tab) => {
       dispatch({ type: actions.SET_ACTIVE_CONVERSATIONS_TAB, tab });
     },
-    setSocketConn: (socket) => {
-      dispatch({ type: actions.SET_SOCKET_CONN, socket });
-    },
+    // setSocketConn: (socket) => {
+    //   dispatch({ type: actions.SET_SOCKET_CONN, socket });
+    // },
   };
 
-  // useLayoutEffect(() => {
-  //   const setSocket = async () => {
-  //     await fetch("/api/socket");
-  //     state.socketConn = io();
-  //     state.socketConn.on("connect", () => {
-  //       console.log("connected");
-  //     });
-  //   };
+  useEffect(() => {
+    fetch("/api/socket").then(() => {
+      // socket = io();
+      state.socketConn = socket;
+      state.socketConn.connect();
+      state.socketConn.on("connect", () => {
+        console.log("connected");
+      });
+    });
 
-  //   setSocket().catch((err) => console.log(err));
-
-  //   return () => {
-  //     state.socketConn.disconnect();
-  //   };
-  // }, []);
+    return () => {
+      state.socketConn.disconnect();
+    };
+  }, []);
 
   return (
     <ChatAppContext.Provider value={value}>{children}</ChatAppContext.Provider>

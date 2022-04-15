@@ -6,9 +6,10 @@ import { ChatAppContext } from "../contexts/ChatApp.context";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { useContext, useEffect, useState } from "react";
 import Loader from "./Loader";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 export default function ConversationList() {
-  let {
+  const {
     setConversations,
     emptyConversations,
     conversationList,
@@ -20,41 +21,41 @@ export default function ConversationList() {
     socket,
     activeConversationsTab,
     setActiveConversationsTab,
+    showChatBox,
   } = useContext(ChatAppContext);
 
   const [isLoading, setIsLoading] = useState(true);
   const [searchedListVisible, setSearchedListVisible] = useState(false);
   const [inputData, setInputData] = useState("");
+  const matches = useMediaQuery("(min-width:768px)");
 
   useEffect(() => socketHandler(), [activeConversationsTab]);
   useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
     setIsLoading(true);
-    if (userInfo.id) {
-      fetch(`/api/rooms/${activeConversationsTab}`, {
-        signal,
+    fetch(`/api/rooms/${activeConversationsTab}`, {
+      signal,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        emptyConversations();
+        setConversations(data.rooms);
+        if (!selectedRoom) {
+          setSelectedRoom(data.rooms[0]);
+          socket.emit("join-chat", { newRoom: data.rooms[0] });
+        }
+        setIsLoading(false);
+        // setIsUpdated(true);
       })
-        .then((res) => res.json())
-        .then((data) => {
-          emptyConversations();
-          setConversations(data.rooms);
-          if (!selectedRoom) {
-            setSelectedRoom(data.rooms[0]);
-            socket.emit("join-chat", { newRoom: data.rooms[0] });
-          }
-          setIsLoading(false);
-          // setIsUpdated(true);
-        })
-        .catch((err) => console.log(err));
-    }
+      .catch((err) => console.log(err));
     return () => {
       emptyConversations();
       if (signal && controller.abort) {
         controller.abort();
       }
     };
-  }, [userInfo, activeConversationsTab]);
+  }, [activeConversationsTab]);
   useEffect(() => {
     if (inputData) {
       setIsLoading(true);
@@ -112,12 +113,12 @@ export default function ConversationList() {
         let latestChatSender = "";
         let latestChatBody = "";
         let chatMembers = conversation.members
-          .filter((member) => member._id !== userInfo.id)
+          .filter((member) => member._id !== userInfo._id)
           .map((member) => member._id);
 
         if (conversation.latestChat) {
           latestChatSender =
-            conversation.latestChat.sender._id == userInfo.id
+            conversation.latestChat.sender._id == userInfo._id
               ? "You"
               : conversation.latestChat.sender.firstname;
           latestChatBody = conversation.latestChat.body;
@@ -130,7 +131,7 @@ export default function ConversationList() {
               isGroup={true}
               members={chatMembers}
               name={conversation.groupName}
-              image={conversation.groupImage}
+              image={conversation.groupImage.url}
               latestChatSender={latestChatSender}
               latestChatBody={latestChatBody}
               onclick={() => joinRoom(conversation)}
@@ -145,7 +146,7 @@ export default function ConversationList() {
               isGroup={false}
               members={[conversation.members[0]._id]}
               name={`(You) ${conversation.members[0].fullname}`}
-              image={conversation.members[0].image}
+              image={conversation.members[0].image.url}
               latestChatSender={latestChatSender}
               latestChatBody={latestChatBody}
               onclick={() => joinRoom(conversation)}
@@ -154,7 +155,7 @@ export default function ConversationList() {
         }
 
         for (let i = 0; i < conversation.members.length; i++) {
-          if (conversation.members[i]._id != userInfo.id) {
+          if (conversation.members[i]._id != userInfo._id) {
             privateConvoReceiver = conversation.members[i];
             break;
           }
@@ -166,7 +167,7 @@ export default function ConversationList() {
             isGroup={false}
             members={chatMembers}
             name={privateConvoReceiver.fullname}
-            image={privateConvoReceiver.image}
+            image={privateConvoReceiver.image.url}
             latestChatSender={latestChatSender}
             latestChatBody={latestChatBody}
             onclick={() => joinRoom(conversation)}
@@ -178,8 +179,10 @@ export default function ConversationList() {
 
   function joinRoom(room) {
     setSearchedListVisible(false);
+    if (!matches) {
+      showChatBox(true);
+    }
     if (selectedRoom._id !== room._id) {
-      console.log("rejoin");
       socket.emit("join-chat", { newRoom: room, oldRoom: selectedRoom });
       setSelectedRoom(room);
     }

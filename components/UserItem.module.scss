@@ -19,11 +19,15 @@
       }
 
     &__image-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         width: 64px;
         height: 64px;
         border-radius: 50%;
         position: relative;
         flex-shrink: 0;
+        overflow: hidden;
 
     }
 

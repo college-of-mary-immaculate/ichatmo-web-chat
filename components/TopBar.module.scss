@@ -5,19 +5,22 @@
   align-items: center;
   justify-content: space-between;
   padding: 0.75rem;
-  // background-color: darkblue;
+  // background-color: black;
   border-bottom: 1px solid lightgray;
   // box-shadow: 0 2px 4px rgba($color: #000000, $alpha: 0.1);
   // margin-bottom: 00.75rem;
 
   &__header {
-    font-size: clamp(1.2rem, 5vw, 1.5rem);
+    // font-size: clamp(1.2rem, 5vw, 1.5rem);
+    font-size: 1.5rem;
     // color: white;
   }
 
   &__user {
     display: flex;
     align-items: center;
+    position: relative;
+    cursor: pointer;
     // color: white;
   }
 
@@ -42,6 +45,38 @@
 
     @include mixins.tablet() {
       display: block;
+    }
+  }
+
+  &__dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: #fefefe;
+    margin-top: 0.5rem;
+    box-shadow: 0 0px 4px rgba($color: #000000, $alpha: 0.25);
+    border-radius: 0.5rem;
+    min-width: 130px;
+    overflow: hidden;
+
+    &-item {
+      font-size: 0.875rem;
+      padding: 0.5rem 0.75rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      color: black;
+
+      &:hover {
+        background-color: #f4f4f4;
+      }
+
+      &-icon {
+        width: 24px;
+        height: 24px;
+        margin-right: 0.5rem;
+        color: dodgerblue;
+      }
     }
   }
 

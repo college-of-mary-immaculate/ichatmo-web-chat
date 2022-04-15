@@ -30,7 +30,9 @@
     flex-shrink: 0;
   }
 
-
+  &__image {
+    object-fit: cover;
+  }
 
   &__spacer {
     width: 36px;

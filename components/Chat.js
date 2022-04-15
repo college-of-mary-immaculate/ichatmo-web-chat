@@ -12,7 +12,7 @@ export default function Chat(props) {
         <div className={styles["c-chat__image-wrap"]}>
           {!props.consecutive ? (
             <Image
-              className={styles["c-chat__user-pic"]}
+              className={styles["c-chat__image"]}
               src={props.userPic}
               alt="user pic"
               layout="fill"

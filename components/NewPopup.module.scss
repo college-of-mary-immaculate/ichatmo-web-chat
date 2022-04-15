@@ -2,14 +2,14 @@
     position: fixed;
     top: 0;
     left: 0;
-    padding: 0.7rem;
+    padding: 0.75rem;
     display: flex;
     align-items: flex-start;
     width: 100%;
     height: 100%;
     justify-content: center;
     background-color: rgba($color: #000000, $alpha: 0.2);
-    box-shadow: 0 4px 4px rgba($color: #000000, $alpha: 0.25);
+    // box-shadow: 0 4px 4px rgba($color: #000000, $alpha: 0.25);
     // backdrop-filter: blur(4px);
     overflow-y: auto;
     z-index: 9999;
@@ -83,6 +83,39 @@
         }
     }
 
+    &__loader {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background-color: #fefefe;
+        border-radius: 1rem;
+        padding: 1rem;
+        box-shadow: 0 4px 4px rgba($color: #000000, $alpha: 0.2);
+        min-width: 200px;
+    
+        &-text {
+          text-align: center;
+          font-size: 0.875rem;
+        }
+      }
+    
+      &__loader-bg {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        top: 0;
+        left: 0;
+        padding: 1rem;
+        z-index: 99999;
+        background-color: rgba($color: #000000, $alpha: 0.2);
+        // background-color: rgba($color: #fefefe, $alpha: 0.5);
+      }
+
     &__wrap {
         display: grid;
         grid-template-rows: auto auto 1fr;
@@ -155,15 +188,17 @@
 
     &__img-selector-wrap {
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
         margin-bottom: 1rem;
     }
 
     &__img-selector-button {
-        width: 100px;
-        height: 100px;
+        width: 120px;
+        height: 120px;
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
         border-radius: 50%;
@@ -175,6 +210,7 @@
         position: relative;
         overflow: hidden;
         outline: none;
+        margin-bottom: 0.5rem;
 
         &-icon {
             width: 36px;
@@ -186,14 +222,52 @@
         object-fit: cover;
     }
 
+    &__image-errors-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    
+      &__error-icon-wrap, &__info-icon-wrap {
+        margin-right: 0.2rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        vertical-align: middle;
+      }
+    
+      &__error-icon, &__info-icon {
+        width: 16px;
+        height: 16px;
+      }
+    
+      &__error {
+        display: inline;
+        // align-items: center;
+        color: #EE0000;
+        font-size: 0.75rem;
+        vertical-align: middle;
+    
+        &--centered {
+          text-align: center;
+        }
+      }
+
+      &__info-text {
+        display: inline;
+        // align-items: center;
+        color: dodgerblue;
+        font-size: 0.75rem; 
+        vertical-align: middle;
+      }
+
     &__user-add-wrap {
         border-radius: 1rem;
         background-color: #ededed;
         font-size: 0.875rem;
         padding: 0.75em 1em;
         display: block;
-        // align-items: center;
-        margin-bottom: 1rem;
+        // align-items: center
     }
 
     &__added-user-pill {
@@ -232,18 +306,46 @@
         min-height: 350px;
     }
 
-    &__create-button {
+    &__bottom-wrap {
+        display: flex;
+        flex-direction: row-reverse;
+        align-items: center;
+        justify-content: flex-start;
+    }
+
+    &__button {
         margin-top: auto;
-        justify-self: center;
+        justify-self: right;
         border-radius: 1rem;
-        background-color: dodgerblue;
         font-weight: 600;
         text-transform: uppercase;
-        color: white;
         border: none;
         font-size: 0.75rem;
         padding: 1em 2em;
         cursor: pointer;
+
+        &:disabled {
+            opacity: 0.5;
+        }
+
+        &--filled {
+            background-color: dodgerblue;
+            color: white;
+        }
+
+        &--text {
+            background-color: white;
+            color: dodgerblue;
+            // border: 2px solid dodgerblue;
+            margin-right: 0.5rem;
+        }
+    }
+
+    &__input-wrap {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 1rem;
     }
 
     &__input {
@@ -254,12 +356,10 @@
         font-size: 0.875rem;
         padding: 0.75em 1em;
         border-radius: 1rem;
-        margin-bottom: 1rem;
 
         &--inline {
             width: auto;
             min-width: 200px;
-            margin: 0;
             border-radius: 0;
             padding: 0;
         }

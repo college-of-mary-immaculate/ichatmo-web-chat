@@ -1,13 +1,13 @@
 import Image from "next/image";
 import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { ChatAppContext } from "../contexts/ChatApp.context";
 import useRoomOnlineCheck from "../utils/useRoomOnlineCheck";
 import styles from "./ConversationItem.module.scss";
 
 export default function ConversationItem(props) {
-  let { socket, userInfo } = useContext(ChatAppContext);
-  const [isOnline] = useRoomOnlineCheck(userInfo.id, props.members, socket);
+  const { socket, userInfo } = useContext(ChatAppContext);
+  const [isOnline] = useRoomOnlineCheck(userInfo._id, props.members, socket);
 
   return (
     <li className={styles["c-conversations__item"]} onClick={props.onclick}>
@@ -25,7 +25,6 @@ export default function ConversationItem(props) {
           //   placeholder="blur"
         />
       </div>
-
       <div
         className={`${styles["c-conversations__innerwrap"]} ${
           !props.latestChatBody

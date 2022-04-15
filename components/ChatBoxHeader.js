@@ -7,9 +7,10 @@ import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import styles from "./ChatBoxHeader.module.scss";
 
 export default function ChatBoxHeader() {
-  let { userInfo, socket, roomHeader } = useContext(ChatAppContext);
+  const { userInfo, socket, roomHeader, showChatBox, toggleChatMenu } =
+    useContext(ChatAppContext);
   const [isOnline] = useRoomOnlineCheck(
-    userInfo.id,
+    userInfo._id,
     roomHeader.members,
     socket
   );
@@ -18,6 +19,7 @@ export default function ChatBoxHeader() {
     <div className={styles["c-chatbox-header"]}>
       <button
         className={`${styles["c-chatbox-header__button"]} ${styles["c-chatbox-header__button--back"]}`}
+        onClick={() => showChatBox(false)}
       >
         <ArrowBackRoundedIcon
           className={styles["c-chatbox-header__button-icon"]}
@@ -42,6 +44,7 @@ export default function ChatBoxHeader() {
       <p className={styles["c-chatbox-header__name"]}>{roomHeader.name}</p>
       <button
         className={`${styles["c-chatbox-header__button"]} ${styles["c-chatbox-header__button--align-right"]}`}
+        onClick={() => toggleChatMenu()}
       >
         <MenuOpenRoundedIcon
           className={styles["c-chatbox-header__button-icon"]}

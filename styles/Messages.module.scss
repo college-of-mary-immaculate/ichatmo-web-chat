@@ -4,7 +4,9 @@
   //   height: 100%;
   min-height: 100%;
   max-height: 100%;
+  width: 100%;
   overflow-y: auto;
+  overflow-x: hidden;
   display: grid;
   position: relative;
   grid-template-columns: repeat(12, 1fr);
@@ -14,16 +16,24 @@
   &__topbar {
     grid-column: 1 / -1;
     grid-row: 1;
-    // z-index: 999;
+    z-index: 99;
+    width: 100%;
+
+    @include mixins.tablet() {
+      z-index: 99;
+    }
   }
 
   &__conversations {
     grid-column: 1 / -1;
     grid-row: 2 / -1;
     z-index: 0;
+    width: 100%;
+
 
     @include mixins.tablet() {
       grid-column: 1 / 5;
+      min-width: 300px;
     }
 
     // @include mixins.desktop() {
@@ -32,18 +42,29 @@
   }
 
   &__chat-box {
+    position: fixed;
     grid-column: 1 / -1;
     grid-row: 1 / -1;
-    z-index: 1;
-    overflow: hidden;
+    transform: translateX(100%);
+    transition: transform 500ms ease;
+    z-index: 999;
+    width: 100%;
+    height: 100%;
+
+    &--show {
+      transform: translateX(0);
+    }
 
     @include mixins.tablet() {
+      position: relative;
+      transform: translateX(0);
       grid-column: 5 / -1;
       grid-row: 2 / -1;
       // border-radius: 1rem 1rem 0 0;
       border: 1px solid lightgrey;
       border-top: none;
       border-bottom: none;
+      z-index: 1;
       // margin-right: 0.75rem;
       // margin-top: -0.75rem;
     }
@@ -53,27 +74,40 @@
       // grid-column: 5 / -1;
       min-width: 670px;
     }
+
+    &--full {
+      grid-column: 5 / -1;
+    }
   }
 
   &__chat-menu {
     grid-column: 1 / -1;
     grid-row: 1 / -1;
-    z-index: 2;
-    overflow: hidden;
-    display:none;
+    // overflow: hidden;
+    overflow-y: hidden;
+    z-index: 9999;
+    position: fixed;
+    transform: translateX(100%);
+    transition: transform 500ms ease, box-shadow 500ms ease;
+    width: 100%;
+    height: 100%;
+
+    &--show {
+      transform: translateX(0);
+      box-shadow: -2px 2px 4px rgba($color: #000000, $alpha: 0.2);
+    }
 
     @include mixins.tablet() {
-      // grid-column: 4 / -1;
-      display: none;
+      position: relative;
+      grid-column: 10 / -1;
+      grid-row: 2 / -1;
       min-width: 280px;
+      z-index: 2;
     }
 
     @include mixins.desktop() {
-      // border-top: 1px solid lightgrey;
-      // display: none;
-      grid-column: 10 /-1;
-      grid-row: 2 / -1;
-      display: block;
+      box-shadow: none;
+      transition: none;
     }
   }
 }

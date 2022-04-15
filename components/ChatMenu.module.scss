@@ -9,22 +9,6 @@
   overflow-y: auto;
   position: relative;
 
-  //   &::before {
-  //     @include mixins.tablet() {
-  //       content: "";
-  //       position: sticky;
-  //       top: 0;
-  //       //   left: 50%;
-  //       width: calc(100% - (0.75rem * 2));
-  //       //   width: 100%;
-  //       height: 1px;
-  //       background-color: transparent;
-  //       border-top: 1px solid lightgray;
-  //       //   transform: translateX(-50%);
-  //       align-self: center;
-  //     }
-  //   }
-
   &__user {
     margin: 0 0.75rem 1rem 0.75rem;
     padding: 0.75rem 0;
@@ -55,11 +39,11 @@
     margin-top: 0.75rem;
 
     &-icon {
-      width: 24px;
-      height: 24px;
+      width: 36px;
+      height: 36px;
     }
 
-    @include mixins.tablet() {
+    @include mixins.desktop() {
       display: none;
     }
   }

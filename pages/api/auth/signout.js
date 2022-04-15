@@ -1,4 +1,4 @@
-const { serialize } = "cookie";
+import { serialize } from "cookie";
 
 export default async function signOut(req, res) {
   //   const { cookies } = req;
@@ -10,4 +10,5 @@ export default async function signOut(req, res) {
     path: "/",
   });
   res.setHeader("Set-Cookie", serialized);
+  res.end();
 }

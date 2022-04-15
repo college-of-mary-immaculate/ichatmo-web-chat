@@ -13,7 +13,8 @@ import ArrowBackOutlinedIcon from "@mui/icons-material/ArrowBackOutlined";
 // });
 
 export default function ChatMenu() {
-  let { roomHeader, selectedRoom, userInfo } = useContext(ChatAppContext);
+  const { roomHeader, selectedRoom, userInfo, toggleChatMenu } =
+    useContext(ChatAppContext);
 
   const colorButtons = sampleColors.map((colorItem, index) => (
     <ColorButton key={index} color={colorItem.color} />
@@ -36,7 +37,7 @@ export default function ChatMenu() {
                   key={user._id}
                   userId={user.id}
                   name={user.fullname}
-                  image={user.image}
+                  image={user.image.url}
                   isAdmin={true}
                 />
               );
@@ -46,7 +47,7 @@ export default function ChatMenu() {
                 key={user._id}
                 userId={user.id}
                 name={user.fullname}
-                image={user.image}
+                image={user.image.url}
               />
             );
           })
@@ -55,7 +56,10 @@ export default function ChatMenu() {
   return (
     <div className={styles["c-chat-menu"]}>
       <div className={styles["c-chat-menu__user"]}>
-        <button className={styles["c-chat-menu__back-button"]}>
+        <button
+          className={styles["c-chat-menu__back-button"]}
+          onClick={() => toggleChatMenu()}
+        >
           <ArrowBackOutlinedIcon
             className={styles["c-chat-menu__back-button-icon"]}
           />
@@ -82,12 +86,13 @@ export default function ChatMenu() {
       {selectedRoom && selectedRoom.isGroup ? (
         <ul className={styles["c-chat-menu__members"]}>{chatMembers}</ul>
       ) : null}
-      <div className={styles["c-chat-menu__option"]}>
+      {/* <div className={styles["c-chat-menu__option"]}>
         {/* <p className={styles["c-chat-menu__option-name"]}>Chat color</p>
         <ul className={styles["c-chat-menu__color-list"]}>{colorButtons}</ul> */}
+      {/* <div className={styles["c-chat-menu__option"]}>
         {selectedRoom &&
         selectedRoom.isGroup &&
-        userInfo.id == selectedRoom.groupAdmin._id ? (
+        userInfo._id == selectedRoom.groupAdmin._id ? (
           <button
             className={styles["c-chat-menu__delete-button"]}
             onClick={async () => await deleteGroup()}
@@ -95,20 +100,6 @@ export default function ChatMenu() {
             Delete group
           </button>
         ) : null}
-      </div>
-      {/* <div className={styles["c-chat-menu__option"]}>
-        <p className={styles["c-chat-menu__option-name"]}>Change emoji</p>
-        <div className={styles["c-chat-menu__emoji-picker"]}>
-          <Picker
-            // native={true}
-            set="google"
-            emojiTooltip={false}
-            // perLine={100}
-            color="dodgerblue"
-            style={{ border: "none" }}
-            // emojiSize={36}
-          />
-        </div>
       </div> */}
     </div>
   );

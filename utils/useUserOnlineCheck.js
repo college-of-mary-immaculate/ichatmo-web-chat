@@ -1,7 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { ChatAppContext } from "../contexts/ChatApp.context";
 
-export default function useUserOnlineCheck(client, userId, socket) {
+export default function useUserOnlineCheck(client, userId) {
   const [isOnline, setIsOnline] = useState(false);
+  const { socket } = useContext(ChatAppContext);
 
   useEffect(() => socketHandler(), [userId]);
   useEffect(() => {
