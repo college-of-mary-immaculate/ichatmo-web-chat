@@ -20,6 +20,7 @@ export default function NewGroupPopup() {
     userSearchedList,
     setSelectedRoom,
     selectedRoom,
+    showChatBox,
     socket,
   } = useContext(ChatAppContext);
   const [selectedUsers, setSelectedUsers] = useState([]);
@@ -131,6 +132,7 @@ export default function NewGroupPopup() {
         setSelectedRoom(data.room);
         setIsLoading(false);
         toggleNewGroupPopup();
+        showChatBox(true);
       })
       .catch((err) => console.log(err));
   }
