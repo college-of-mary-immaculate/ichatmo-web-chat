@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p $PORT",
     "lint": "next lint"
   },
   "dependencies": {
@@ -15,25 +15,21 @@
     "@material-ui/icons": "^4.11.2",
     "@mui/icons-material": "^5.5.1",
     "@tsndr/cloudflare-worker-jwt": "^1.1.7",
-    "avatar-builder": "^1.0.2",
     "bcrypt": "^5.0.1",
     "cloudinary": "^1.29.0",
     "cookie": "^0.4.2",
     "emoji-mart": "^3.0.1",
-    "emoji-picker-react": "^3.5.1",
-    "generate-avatar": "^1.4.10",
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^4.4.1",
     "mongoose": "^6.2.9",
-    "mysql2": "^2.3.3",
     "next": "12.1.0",
-    "random-avatar-generator": "^2.0.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-transition-group": "^4.4.2",
     "sass": "^1.49.9",
     "socket.io": "^4.4.1",
     "socket.io-client": "^4.4.1",
+    "text-to-image": "^5.2.0",
     "use-file-picker": "^1.4.2"
   },
   "devDependencies": {
