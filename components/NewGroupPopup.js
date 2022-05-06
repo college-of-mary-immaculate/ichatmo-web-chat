@@ -143,7 +143,7 @@ export default function NewGroupPopup() {
         <div className={styles["c-popup__loader-bg"]}>
           <div className={styles["c-popup__loader"]}>
             <div className={styles["c-popup__loader-wrap"]}>
-              <Loader />
+              <Loader size={64} />
             </div>
             <p className={styles["c-user-popup__loader-text"]}>
               Creating group...
