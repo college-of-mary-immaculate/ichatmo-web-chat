@@ -17,13 +17,13 @@ export default function handler(req, res) {
         users[socket.id] = id;
         io.sockets.emit("user-connect", id);
         socket.join(id);
-        console.log(`${id} connected`);
+        // console.log(`${id} connected`);
       });
 
       socket.on("disconnect", () => {
         if (users[socket.id]) {
           io.sockets.emit("user-disconnect", users[socket.id]);
-          console.log(`${users[socket.id]} disconnected`);
+          // console.log(`${users[socket.id]} disconnected`);
           delete users[socket.id];
         }
       });

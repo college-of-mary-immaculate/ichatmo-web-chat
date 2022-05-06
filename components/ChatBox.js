@@ -174,7 +174,7 @@ export default function ChatBox() {
     <div className={styles["c-chatbox"]}>
       {isLoading && (
         <div className={styles["c-chatbox__loading"]}>
-          <Loader />
+          <Loader size={64} />
         </div>
       )}
       <ChatBoxHeader />

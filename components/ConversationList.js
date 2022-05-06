@@ -250,7 +250,7 @@ export default function ConversationList() {
       </ul>
       {isLoading && (
         <div className={styles["c-conversations__loader-bg"]}>
-          <Loader />
+          <Loader size={64} />
         </div>
       )}
       {searchedListVisible ? (

@@ -149,7 +149,7 @@ export default function ProfilePopup() {
         <div className={styles["c-user-popup__loader-bg"]}>
           <div className={styles["c-user-popup__loader"]}>
             <div className={styles["c-user-popup__loader-wrap"]}>
-              <Loader />
+              <Loader size={64} />
             </div>
             <p className={styles["c-user-popup__loader-text"]}>
               Saving changes...

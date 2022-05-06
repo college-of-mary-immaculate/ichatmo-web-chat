@@ -19,7 +19,7 @@ export default function TopBar() {
     fetch("/api/auth/signout")
       .then(() => {
         socket.disconnect();
-        router.push("/signin");
+        router.push("/login");
       })
       .catch((err) => console.log(err));
   }

@@ -1,0 +1,54 @@
+.navbar {
+  display: flex;
+  // height: 60px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background-color: white;
+  position: sticky;
+  top: 0;
+  width: 100%;
+  z-index: 999;
+
+  &__logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: black;
+
+    &--blue {
+      color: dodgerblue;
+    }
+  }
+
+  &__list {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+
+    @media screen and (max-width: 320px) {
+      flex-direction: column;
+    }
+  }
+
+  &__item {
+    display: flex;
+    flex-shrink: 0;
+  }
+
+  &__link {
+    padding: 0.5rem 1rem;
+    background-color: dodgerblue;
+    color: white;
+    border-radius: 0.5rem;
+    font-weight: 700;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    flex-shrink: 0;
+
+    &--no-fill {
+      color: black;
+      background-color: transparent;
+    }
+  }
+}

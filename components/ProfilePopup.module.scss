@@ -43,6 +43,7 @@
     padding: 1rem;
     box-shadow: 0 4px 4px rgba($color: #000000, $alpha: 0.2);
     min-width: 200px;
+    gap: 1rem;
 
     &-text {
       text-align: center;
@@ -81,7 +82,7 @@
     // background-size: cover;
     // background-repeat: no-repeat;
 
-    @media screen and (min-width: 470px) { 
+    @media screen and (min-width: 470px) {
       max-height: none;
       max-width: 700px;
       border-radius: 1rem;
@@ -142,16 +143,16 @@
   }
 
   &__icon-wrap {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: absolute;
-      border-radius: 50%;
-      top: 0;
-      right: 0;
-      background-color: dodgerblue;
-      z-index: 1;
-      padding: 0.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    border-radius: 50%;
+    top: 0;
+    right: 0;
+    background-color: dodgerblue;
+    z-index: 1;
+    padding: 0.2rem;
   }
 
   &__image-selector-icon {
@@ -188,7 +189,7 @@
   &__error {
     display: inline;
     // align-items: center;
-    color: #EE0000;
+    color: #ee0000;
     font-size: 0.75rem;
     vertical-align: middle;
 
@@ -300,7 +301,7 @@
     cursor: pointer;
 
     &:disabled {
-        opacity: 0.5;
+      opacity: 0.5;
     }
 
     &--filled {

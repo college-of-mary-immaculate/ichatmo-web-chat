@@ -1,28 +1,28 @@
 import { NextResponse } from "next/server";
-import { verify } from "jsonwebtoken";
+// import { verify } from "jsonwebtoken";
+const jwt = require("@tsndr/cloudflare-worker-jwt");
 
 const secret = process.env.JWT_SECRET;
 
-export default function middleware(req) {
+export default async function middleware(req) {
   const { cookies } = req;
-  const jwt = cookies.chatjwt;
-  const url = req.nextUrl.clone();
-  const splitUrl = url.pathname.split("/");
+  const token = cookies.chatjwt;
+  // const url = req.nextUrl.clone();
+  // const splitUrl = url.pathname.split("/");
+  const url = req.page.name;
+  const { origin } = req.nextUrl;
 
-  if (splitUrl[1] == "signin" || splitUrl[1] == "signup") {
-    if (jwt && verify(jwt, secret)) {
-      url.pathname = "/messages";
-      return NextResponse.redirect(url);
+  if (url == "/login" || url == "signup") {
+    if (token && (await jwt.verify(token, secret))) {
+      return NextResponse.redirect(`${origin}/messages`);
     }
-    return NextResponse.next();
   }
 
-  if (splitUrl[1] == "messages") {
-    if (!jwt || !verify(jwt, secret)) {
-      url.pathname = "/signin";
-      return NextResponse.redirect(url);
+  if (url == "/messages") {
+    if (!token || !(await jwt.verify(token, secret))) {
+      return NextResponse.redirect(`${origin}/login`);
     }
-    return NextResponse.next();
   }
+
   return NextResponse.next();
 }

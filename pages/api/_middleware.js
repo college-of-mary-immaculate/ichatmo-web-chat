@@ -1,24 +1,27 @@
 import { NextResponse } from "next/server";
-import { verify } from "jsonwebtoken";
+const jwt = require("@tsndr/cloudflare-worker-jwt");
 
-const secret = process.env.JWT_SECRET;
-
-export default function middleware(req) {
+export default async function middleware(req) {
   const { cookies } = req;
-  const jwt = cookies.chatjwt;
-  const url = req.nextUrl.clone();
-  // const splitUrl = url.pathname.split("/");
+  const token = cookies.chatjwt;
+  const url = req.page.name;
 
-  // if (url.includes("signin") || url.includes("signup")) {
-  //   if (jwt && verify(jwt, secret)) {
-  //     return NextResponse.json({ message: "already logged in" });
-  //   }
-  // }
-
-  // if (url.includes("socket")) {
-  //   if (!jwt || !verify(jwt, secret)) {
-  //     return NextResponse.json({ message: "unathenticated" });
-  //   }
-  // }
+  if (
+    url == "/api/chats/[room]" ||
+    url == "/api/users/[...slug]" ||
+    url == "/api/rooms/[...slug]" ||
+    url == "/api/socket"
+  ) {
+    if (token) {
+      if (await jwt.verify(token, process.env.JWT_SECRET)) {
+        return NextResponse.next();
+      }
+    } else {
+      return new Response(
+        JSON.stringify({ authenticated: false, message: "Not authenticated" }),
+        { status: 401, headers: { "Content-Type": "application/json" } }
+      );
+    }
+  }
   return NextResponse.next();
 }

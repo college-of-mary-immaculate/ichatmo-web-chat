@@ -1,8 +1,11 @@
 import styles from "./Loader.module.scss";
 
-export default function Loader() {
+export default function Loader(props) {
   return (
-    <div className={styles["c-loader"]}>
+    <div
+      style={{ width: `${props.size}px`, height: `${props.size}px` }}
+      className={styles["c-loader"]}
+    >
       <div
         className={`${styles["c-loader__circle"]} ${styles["c-loader__circle--top"]}`}
       ></div>

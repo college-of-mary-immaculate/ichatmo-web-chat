@@ -4,6 +4,8 @@ import Link from "next/link";
 import ErrorRoundedIcon from "@mui/icons-material/ErrorRounded";
 import { useRouter } from "next/router";
 import styles from "../styles/Form.module.scss";
+import NavLayout from "../components/Layouts/NavLayout";
+import Loader from "../components/Loader";
 
 const initialInputErrorState = {
   usernameExists: false,
@@ -13,6 +15,7 @@ const initialInputErrorState = {
 
 export default function SignUp() {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     firstname: "",
     lastname: "",
@@ -22,50 +25,43 @@ export default function SignUp() {
     confirmPassword: "",
   });
   const [inputErrors, setInputErrors] = useState(initialInputErrorState);
+  console.log("render");
 
   function handleSubmit(event) {
     event.preventDefault();
-    setInputErrors({ ...initialInputErrorState });
-    // setInputErrors((prev) => ({
-    //   ...prev,
-    //   passwordsNotMatch: !(formData.password == formData.confirmPassword),
-    // }));
-
-    if (formData.password !== formData.confirmPassword) {
-      console.log("match");
+    setInputErrors({
+      ...initialInputErrorState,
+      passwordsNotMatch: !(formData.password == formData.confirmPassword),
+    });
+    if (!inputErrors.passwordsNotMatch) {
+      setIsLoading(true);
       const { confirmPassword, ...formBody } = formData;
-      console.log(formData);
-      console.log("continue fetch");
-      // fetch("/api/auth/signup", {
-      //   body: JSON.stringify(formBody),
-      //   headers: { "Content-Type": "application/json" },
-      //   method: "POST",
-      // })
-      //   .then((res) => res.json())
-      //   .then((data) => {
-      //     if (data.success) {
-      //       router.push("/messages");
-      //     } else {
-      //       if (data.existing.username) {
-      //         setInputErrors((prev) => ({
-      //           ...prev,
-      //           usernameExists: true,
-      //         }));
-      //       }
-      //       if (data.existing.email) {
-      //         setInputErrors((prev) => ({
-      //           ...prev,
-      //           emailExists: true,
-      //         }));
-      //       }
-      //     }
-      //   })
-      //   .catch((err) => console.log(err));
-    } else {
-      setInputErrors((prev) => ({
-        ...prev,
-        passwordsNotMatch: true,
-      }));
+      fetch("/api/auth/signup", {
+        body: JSON.stringify(formBody),
+        headers: { "Content-Type": "application/json" },
+        method: "POST",
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success) {
+            router.push("/messages");
+          } else {
+            setIsLoading(false);
+            if (data.existing.username) {
+              setInputErrors((prev) => ({
+                ...prev,
+                usernameExists: true,
+              }));
+            }
+            if (data.existing.email) {
+              setInputErrors((prev) => ({
+                ...prev,
+                emailExists: true,
+              }));
+            }
+          }
+        })
+        .catch((err) => console.log(err));
     }
   }
 
@@ -180,9 +176,15 @@ export default function SignUp() {
             </div>
           )}
         </div>
-        <button type="submit" className={styles["c-form__button"]}>
-          Sign Up
-        </button>
+        {isLoading ? (
+          <div className={styles["c-form__loader-wrap"]}>
+            <Loader size={32} />
+          </div>
+        ) : (
+          <button className={styles["c-form__button"]} type="submit">
+            Sign Up
+          </button>
+        )}
         <p className={styles["c-form__text"]}>
           Already have an account?{" "}
           <Link href={"/signin"}>
@@ -193,3 +195,7 @@ export default function SignUp() {
     </div>
   );
 }
+
+SignUp.getLayout = function getLayout(page) {
+  return <NavLayout>{page}</NavLayout>;
+};

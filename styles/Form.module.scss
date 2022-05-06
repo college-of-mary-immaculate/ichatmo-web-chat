@@ -10,7 +10,7 @@
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
-  background-attachment: fixed;
+  // background-attachment: fixed;
 }
 
 .c-form {
@@ -40,6 +40,7 @@
     text-align: center;
     // margin-bottom: 2rem;
     font-size: 0.875rem;
+    margin-top: 1.5rem;
     // color: #808080;
 
     &--link {
@@ -107,7 +108,6 @@
     display: flex;
     align-items: center;
     font-size: 0.875rem;
-    margin-bottom: 1.5rem;
     justify-content: center;
   }
 }

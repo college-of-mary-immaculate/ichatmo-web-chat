@@ -16,10 +16,11 @@ export default async function signin(req, res) {
     },
   };
   const result = await checkUser(user);
-  const passwordMatch = await compare(password, result.password);
+  let passwordMatch = false;
 
   if (result.found) {
     response.isCredentials.user.ok = true;
+    passwordMatch = await compare(password, result.password);
   }
 
   if (passwordMatch) {

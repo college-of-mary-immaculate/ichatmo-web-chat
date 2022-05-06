@@ -1,0 +1,25 @@
+.footer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  border-top: 1px solid lightgray;
+  text-align: center;
+
+  &__logo {
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+
+    &--blue {
+      color: dodgerblue;
+    }
+  }
+
+  &__copyright {
+    font-size: 0.75rem;
+    color: gray;
+    text-align: center;
+  }
+}
