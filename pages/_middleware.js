@@ -12,14 +12,18 @@ export default async function middleware(req) {
   const url = req.page.name;
   const { origin } = req.nextUrl;
 
-  if (url == "/login" || url == "signup") {
-    if (token && (await jwt.verify(token, secret))) {
-      return NextResponse.redirect(`${origin}/messages`);
+  if (url == "/login" || url == "signup" || url == "/") {
+    if (token) {
+      if (await jwt.verify(token, secret)) {
+        return NextResponse.redirect(`${origin}/messages`);
+      }
     }
   }
 
   if (url == "/messages") {
-    if (!token || !(await jwt.verify(token, secret))) {
+    if (!token) {
+      return NextResponse.redirect(`${origin}/login`);
+    } else if (!(await jwt.verify(token, secret))) {
       return NextResponse.redirect(`${origin}/login`);
     }
   }
