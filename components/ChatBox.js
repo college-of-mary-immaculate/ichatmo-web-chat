@@ -206,6 +206,7 @@ export default function ChatBox() {
                   // set="google"
                   // perLine={100}
                   color="dodgerblue"
+                  perLine={8}
                   style={{
                     backgroundColor: "#fefefe",
                     boxShadow: "0 0 4px rgba(0,0,0,0.25)",
@@ -225,13 +226,15 @@ export default function ChatBox() {
               onClick={() => setEmojiToggle((prev) => !prev)}
             >
               <InsertEmoticonRoundedIcon
-                className={`${styles["c-chatbox__button-icon"]} ${styles["c-chatbox__button-icon--blue"]} ${styles["c-chatbox__button-icon--medium"]}`}
+                style={{ fontSize: 32 }}
+                className={`${styles["c-chatbox__button-icon"]} ${styles["c-chatbox__button-icon--blue"]}`}
               />
             </button>
           </div>
         </div>
         <button className={styles["c-chatbox__button"]} onClick={handleSubmit}>
           <SendRoundedIcon
+            style={{ fontSize: 32 }}
             className={`${styles["c-chatbox__button-icon"]} ${styles["c-chatbox__button-icon--blue"]}`}
           />
         </button>

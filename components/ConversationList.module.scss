@@ -25,8 +25,8 @@
     }
 
     &-icon {
-      width: 24px;
-      height: 24px;
+      // width: 24px;
+      // height: 24px;
       color: darkgray;
     }
 
@@ -50,10 +50,10 @@
     margin-left: 0.75rem;
     cursor: pointer;
 
-    &-icon {
-      width: 36px;
-      height: 36px;
-    }
+    // &-icon {
+    //   width: 36px;
+    //   height: 36px;
+    // }
   }
 
   &__tabs {
@@ -142,5 +142,5 @@
     padding: 2rem 1rem;
     margin: auto 0;
     color: gray;
-  } 
+  }
 }

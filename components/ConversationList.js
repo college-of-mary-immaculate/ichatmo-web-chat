@@ -208,6 +208,7 @@ export default function ConversationList() {
             onClick={() => setSearchedListVisible(false)}
           >
             <CloseRoundedIcon
+              style={{ fontSize: 32 }}
               className={styles["c-conversations__close-searched-button-icon"]}
             />
           </button>

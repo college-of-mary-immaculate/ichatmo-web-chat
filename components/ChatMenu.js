@@ -61,6 +61,7 @@ export default function ChatMenu() {
           onClick={() => toggleChatMenu()}
         >
           <ArrowBackOutlinedIcon
+            style={{ fontSize: 32 }}
             className={styles["c-chat-menu__back-button-icon"]}
           />
         </button>

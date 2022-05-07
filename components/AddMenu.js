@@ -41,6 +41,7 @@ export default function AddMenu() {
             onClick={toggleChatCreatePopup}
           >
             <PersonAddAltRoundedIcon
+              style={{ fontSize: 24 }}
               className={styles["c-add-menu__button-icon"]}
             />
           </button>
@@ -51,6 +52,7 @@ export default function AddMenu() {
             onClick={toggleGroupCreatePopup}
           >
             <GroupAddRoundedIcon
+              style={{ fontSize: 24 }}
               className={styles["c-add-menu__button-icon"]}
             />
           </button>
@@ -62,7 +64,10 @@ export default function AddMenu() {
         }`}
         onClick={handleClick}
       >
-        <AddRoundedIcon className={styles["c-add-menu__main-button-icon"]} />
+        <AddRoundedIcon
+          style={{ fontSize: 36 }}
+          className={styles["c-add-menu__main-button-icon"]}
+        />
       </button>
     </div>
   );

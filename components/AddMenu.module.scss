@@ -29,10 +29,10 @@
     transition: transform 500ms ease;
     aspect-ratio: 1;
 
-    &-icon {
-      width: 36px;
-      height: 36px;
-    }
+    // &-icon {
+    //   width: 36px;
+    //   height: 36px;
+    // }
 
     &--rotate {
       transform: rotate(135deg);
@@ -83,9 +83,9 @@
     padding: 0.5rem;
     cursor: pointer;
 
-    &-icon {
-      width: 24px;
-      height: 24px;
-    }
+    // &-icon {
+    //   width: 24px;
+    //   height: 24px;
+    // }
   }
 }

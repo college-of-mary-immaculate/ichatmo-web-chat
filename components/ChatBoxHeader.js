@@ -22,6 +22,7 @@ export default function ChatBoxHeader() {
         onClick={() => showChatBox(false)}
       >
         <ArrowBackRoundedIcon
+          style={{ fontSize: 32 }}
           className={styles["c-chatbox-header__button-icon"]}
         />
       </button>
@@ -47,6 +48,7 @@ export default function ChatBoxHeader() {
         onClick={() => toggleChatMenu()}
       >
         <MenuOpenRoundedIcon
+          style={{ fontSize: 32 }}
           className={styles["c-chatbox-header__button-icon"]}
         />
       </button>

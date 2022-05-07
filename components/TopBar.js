@@ -52,6 +52,7 @@ export default function TopBar() {
               role="button"
             >
               <AccountCircleRoundedIcon
+                style={{ fontSize: 24 }}
                 className={styles["c-topbar__dropdown-item-icon"]}
               />
               <p>Profile</p>
@@ -62,6 +63,7 @@ export default function TopBar() {
               onClick={() => signOut()}
             >
               <LogoutRoundedIcon
+                style={{ fontSize: 24 }}
                 className={styles["c-topbar__dropdown-item-icon"]}
               />
               <p>Sign Out</p>

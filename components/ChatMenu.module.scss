@@ -38,10 +38,10 @@
     left: 0;
     margin-top: 0.75rem;
 
-    &-icon {
-      width: 36px;
-      height: 36px;
-    }
+    // &-icon {
+    //   width: 36px;
+    //   height: 36px;
+    // }
 
     @include mixins.desktop() {
       display: none;
@@ -97,9 +97,9 @@
   }
 
   &__delete-button {
-    background-color: #EE0000;
+    background-color: #ee0000;
     color: white;
-    padding:0.75em 1em;
+    padding: 0.75em 1em;
     font-size: 0.875rem;
     border: none;
     border-radius: 1rem;
