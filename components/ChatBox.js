@@ -144,6 +144,7 @@ export default function ChatBox() {
             isFromUser={isFromUser}
             consecutive={true}
             body={message.body}
+            createdAt={message.createdAt}
           />
         );
       } else {
@@ -154,6 +155,7 @@ export default function ChatBox() {
             consecutive={false}
             body={message.body}
             userPic={message.sender.image.url}
+            createdAt={message.createdAt}
           />
         );
       }
@@ -165,6 +167,7 @@ export default function ChatBox() {
           consecutive={false}
           body={message.body}
           userPic={message.sender.image.url}
+          createdAt={message.createdAt}
         />
       );
     }

@@ -4,9 +4,15 @@
   align-self: flex-start;
   display: flex;
   align-items: flex-end;
+  position: relative;
+
+  &:hover > .c-chat__timestamp-wrap {
+    visibility: visible;
+  }
 
   &--user {
     align-self: flex-end;
+    flex-direction: row-reverse;
   }
 
   &--consecutive {
@@ -15,6 +21,24 @@
 
   &:nth-last-child(2) {
     margin-bottom: 1rem;
+  }
+
+  &__timestamp-wrap {
+    margin: auto 0.75rem;
+    color: gray;
+    font-size: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    visibility: hidden;
+    // pointer-events: none;
+    // left: 100%;
+    // top: 50%;
+    // transform: translateY(-50%);
+    // min-width: 100%;
+
+    &--right {
+      align-items: flex-end;
+    }
   }
 
   &__image-wrap {
@@ -58,7 +82,8 @@
   @keyframes fade-in {
     from {
       opacity: 0;
-    } to {
+    }
+    to {
       opacity: 1;
     }
   }

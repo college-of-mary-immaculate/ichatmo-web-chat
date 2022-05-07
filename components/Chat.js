@@ -2,6 +2,7 @@ import styles from "./Chat.module.scss";
 import Image from "next/image";
 
 export default function Chat(props) {
+  const timestamp = new Date(props.createdAt);
   return (
     <li
       className={`${styles["c-chat"]} ${
@@ -31,6 +32,18 @@ export default function Chat(props) {
         }`}
       >
         <p>{props.body}</p>
+      </div>
+      <div
+        className={`${styles["c-chat__timestamp-wrap"]} ${
+          props.isFromUser ? styles["c-chat__timestamp-wrap--right"] : ""
+        }`}
+      >
+        <p className={styles["c-chat__timestamp"]}>
+          {props.createdAt && timestamp.toLocaleDateString()}
+        </p>
+        <p className={styles["c-chat__timestamp"]}>
+          {props.createdAt && timestamp.toLocaleTimeString()}
+        </p>
       </div>
     </li>
   );
