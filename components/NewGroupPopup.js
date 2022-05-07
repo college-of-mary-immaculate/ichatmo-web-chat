@@ -91,7 +91,7 @@ export default function NewGroupPopup() {
           className={styles["c-popup__user-remove-button"]}
           onClick={() => removeAddedUser(user.id)}
         >
-          <RemoveRoundedIcon />
+          <RemoveRoundedIcon style={{ fontSize: 24 }} />
         </button>
       </span>
     );
@@ -161,7 +161,7 @@ export default function NewGroupPopup() {
             className={styles["c-popup__close-button"]}
             onClick={() => toggleNewGroupPopup()}
           >
-            <CloseRoundedIcon />
+            <CloseRoundedIcon style={{ fontSize: 32 }} />
           </button>
         </div>
         <div className={styles["c-popup__img-selector-wrap"]}>
@@ -178,6 +178,7 @@ export default function NewGroupPopup() {
               />
             ) : (
               <AddPhotoAlternateRoundedIcon
+                style={{ fontSize: 36 }}
                 className={styles["c-popup__img-selector-button-icon"]}
               />
             )}
@@ -188,7 +189,10 @@ export default function NewGroupPopup() {
                 className={`${styles["c-popup__error"]} ${styles["c-popup__error--centered"]}`}
               >
                 <span className={styles["c-popup__error-icon-wrap"]}>
-                  <ErrorRoundedIcon className={styles["c-popup__error-icon"]} />
+                  <ErrorRoundedIcon
+                    style={{ fontSize: 16 }}
+                    className={styles["c-popup__error-icon"]}
+                  />
                 </span>
                 {errors[0].fileSizeToolarge &&
                   "File is too large, please choose a file that is less than 3mb"}
@@ -211,7 +215,10 @@ export default function NewGroupPopup() {
             <div className={styles["c-popup__input-info-wrap"]}>
               <p className={`${styles["c-popup__info-text"]}`}>
                 <span className={styles["c-popup__info-icon-wrap"]}>
-                  <InfoRoundedIcon className={styles["c-popup__info-icon"]} />
+                  <InfoRoundedIcon
+                    style={{ fontSize: 16 }}
+                    className={styles["c-popup__info-icon"]}
+                  />
                 </span>{" "}
                 A group name is required
               </p>
@@ -235,7 +242,10 @@ export default function NewGroupPopup() {
             <div className={styles["c-popup__input-info-wrap"]}>
               <p className={`${styles["c-popup__info-text"]}`}>
                 <span className={styles["c-popup__info-icon-wrap"]}>
-                  <InfoRoundedIcon className={styles["c-popup__info-icon"]} />
+                  <InfoRoundedIcon
+                    style={{ fontSize: 16 }}
+                    className={styles["c-popup__info-icon"]}
+                  />
                 </span>{" "}
                 Group must have atleast 2 participants
               </p>

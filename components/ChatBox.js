@@ -226,7 +226,7 @@ export default function ChatBox() {
               onClick={() => setEmojiToggle((prev) => !prev)}
             >
               <InsertEmoticonRoundedIcon
-                style={{ fontSize: 32 }}
+                style={{ fontSize: 24 }}
                 className={`${styles["c-chatbox__button-icon"]} ${styles["c-chatbox__button-icon--blue"]}`}
               />
             </button>

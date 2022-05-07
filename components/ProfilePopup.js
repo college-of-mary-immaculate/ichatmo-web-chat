@@ -166,7 +166,7 @@ export default function ProfilePopup() {
             className={styles["c-user-popup__close-button"]}
             onClick={() => toggleProfilePopup()}
           >
-            <CloseRoundedIcon />
+            <CloseRoundedIcon style={{ fontSize: 32 }} />
           </button>
         </div>
         <form className={styles["c-user-popup__form"]} onSubmit={saveChanges}>
@@ -176,6 +176,7 @@ export default function ProfilePopup() {
             <div className={styles["c-user-popup__image-selector-wrap"]}>
               <span className={styles["c-user-popup__icon-wrap"]}>
                 <EditRoundedIcon
+                  style={{ fontSize: 32 }}
                   className={styles["c-user-popup__image-selector-icon"]}
                 />
               </span>
@@ -201,6 +202,7 @@ export default function ProfilePopup() {
                 >
                   <span className={styles["c-user-popup__error-icon-wrap"]}>
                     <ErrorRoundedIcon
+                      style={{ fontSize: 16 }}
                       className={styles["c-user-popup__error-icon"]}
                     />
                   </span>
@@ -245,6 +247,7 @@ export default function ProfilePopup() {
                   <p className={`${styles["c-user-popup__error"]}`}>
                     <span className={styles["c-user-popup__error-icon-wrap"]}>
                       <ErrorRoundedIcon
+                        style={{ fontSize: 16 }}
                         className={styles["c-user-popup__error-icon"]}
                       />
                     </span>{" "}
@@ -305,6 +308,7 @@ export default function ProfilePopup() {
                   <p className={`${styles["c-user-popup__error"]}`}>
                     <span className={styles["c-user-popup__error-icon-wrap"]}>
                       <ErrorRoundedIcon
+                        style={{ fontSize: 16 }}
                         className={styles["c-user-popup__error-icon"]}
                       />
                     </span>{" "}
@@ -346,6 +350,7 @@ export default function ProfilePopup() {
                   <p className={`${styles["c-user-popup__error"]}`}>
                     <span className={styles["c-user-popup__error-icon-wrap"]}>
                       <ErrorRoundedIcon
+                        style={{ fontSize: 16 }}
                         className={styles["c-user-popup__error-icon"]}
                       />
                     </span>{" "}
@@ -401,6 +406,7 @@ export default function ProfilePopup() {
                   <p className={`${styles["c-user-popup__error"]}`}>
                     <span className={styles["c-user-popup__error-icon-wrap"]}>
                       <ErrorRoundedIcon
+                        style={{ fontSize: 16 }}
                         className={styles["c-user-popup__error-icon"]}
                       />
                     </span>{" "}

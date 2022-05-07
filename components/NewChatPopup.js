@@ -87,7 +87,7 @@ export default function NewChatPopup() {
             className={styles["c-popup__close-button"]}
             onClick={() => toggleNewChatPopup()}
           >
-            <CloseRoundedIcon />
+            <CloseRoundedIcon style={{ fontSize: 32 }} />
           </button>
         </div>
 
